@@ -1,26 +1,62 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mercado Local</title>
+    <title>Login - Mercado Local</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
     <link rel="stylesheet" href="Assets/styles/styles.css" />
   </head>
   <body>
-    <header>
-      <div class="logo altura-header"></div>
-      <div class="categoria-ofertas altura-header">
-        <div class="categorias">selector categorias</div>
-        <div class="ofertas">ofertas</div>
-      </div>
-      <div class="barra-busqueda altura-header">barra de busqueda</div>
-      <div class="botones altura-header">
-        <div class="boton-perfil"></div>
-        <div class="boton-favoritos"></div>
-        <div class="boton-compras"></div>
-        <div class="boton-carrito"></div>
-        <div class="boton-configuracion"></div>
+    <header class="topbar">
+      <button class="icon-square" aria-label="bolsa">
+        <i class="fa-solid fa-bag-shopping"></i>
+      </button>
+
+      <button class="pill-btn">Categorias</button>
+      <button class="pill-btn">Ofertas</button>
+      <button class="search-pill">Buscar</button>
+
+      <div class="topbar-icons">
+        <button class="icon-btn" aria-label="perfil">
+          <i class="fa-regular fa-circle-user"></i>
+        </button>
+        <button class="icon-btn" aria-label="favoritos">
+          <i class="fa-solid fa-heart"></i>
+        </button>
+        <button class="icon-btn" aria-label="paquetes">
+          <i class="fa-solid fa-cube"></i>
+        </button>
+        <button class="icon-btn" aria-label="carrito">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </button>
+        <button class="icon-btn" aria-label="ayuda">
+          <i class="fa-solid fa-question"></i>
+        </button>
       </div>
     </header>
+
+    <main class="login-layout">
+      <section class="welcome">
+        <h1>Ingresa tu email o telefono para iniciar sesion</h1>
+      </section>
+
+      <section class="login-card">
+        <label for="correo">Email o Telefono</label>
+        <input id="correo" type="text" />
+
+        <button class="continue-btn">Continuar</button>
+
+        <div class="divider"><span>o</span></div>
+
+        <button class="google-btn">
+          <i class="fa-brands fa-google"></i>
+          Iniciar sesion con google
+        </button>
+      </section>
+    </main>
   </body>
 </html>

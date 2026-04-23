@@ -1,61 +1,215 @@
-header {
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: #dfdfdf;
+}
+
+.topbar {
+  width: 100%;
+  height: 54px;
+  background: #3f85ba;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px;
+}
+
+.icon-square {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+  background: #e8e8e8;
+  color: #1f1f1f;
+  cursor: pointer;
+}
+
+.pill-btn,
+.search-pill {
+  border: none;
+  border-radius: 20px;
+  background: #f6f6f6;
+  color: #2b6fa2;
+  font-weight: 600;
+  font-size: 15px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.pill-btn {
+  width: 130px;
+}
+
+.search-pill {
+  flex: 1;
+  min-width: 220px;
+  max-width: 420px;
+}
+
+.topbar-icons {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.icon-btn {
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 27px;
+  cursor: pointer;
+}
+
+.login-layout {
+  width: min(1200px, 95%);
+  margin: 56px auto 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 auto;
-  gap: 10px;
+  gap: 36px;
 }
-.logo {
-  background-color: red;
-  width: 10%;
-  border-radius: 15px;
-}
-.categoria-ofertas {
-  background-color: rgb(255, 255, 255);
-  width: 50%;
+
+.welcome {
+  flex: 1;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  justify-content: center;
 }
-.barra-busqueda {
-  background-color: green;
+
+.welcome h1 {
+  max-width: 360px;
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: #111111;
+}
+
+.login-card {
+  width: 520px;
+  background: #78b4eb;
+  border-radius: 16px;
+  padding: 18px 16px 22px;
+}
+
+.login-card label {
+  display: block;
+  margin-bottom: 8px;
+  color: #0f2d49;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 34px;
+}
+
+.login-card input {
   width: 100%;
-  border-radius: 25px;
+  height: 56px;
+  border: none;
+  border-radius: 28px;
+  background: #3f6d99;
+  margin-bottom: 12px;
+  padding: 0 18px;
+  color: #ffffff;
+  font-size: 18px;
 }
-.botones {
-  background-color: yellow;
-  width: 60%;
-  border-radius: 15px;
+
+.continue-btn {
+  width: 100%;
+  height: 56px;
+  border: none;
+  border-radius: 28px;
+  background: #3f6d99;
+  color: #111111;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 38px;
+  cursor: pointer;
+}
+
+.divider {
+  margin: 12px 0;
   display: flex;
-  justify-content: end;
   align-items: center;
-  gap: 20px;
-  padding: right: 5px;
-  padding-left: 5px;
+  color: #1f3650;
+  font-size: 30px;
 }
-.altura-header {
-  height: 45px;
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 2px;
+  background: #5286b5;
 }
-.categorias {
-  background-color: purple;
-  width: 50%;
-  height: 100%;
-  border-radius: 15px;
+
+.divider span {
+  margin: 0 10px;
 }
-.ofertas {
-  background-color: orange;
-  width: 80%;
-  height: 100%;
-  border-radius: 15px;
+
+.google-btn {
+  width: 100%;
+  height: 56px;
+  border: none;
+  border-radius: 28px;
+  background: #efefef;
+  color: #686868;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
 }
-.boton-perfil,
-.boton-favoritos,
-.boton-compras,
-.boton-carrito,
-.boton-configuracion {
-  background-color: gray;
-  border: 1px solid black;
-  border-radius: 100%;
-  height: 95%;
-  width: 70px;
+
+.google-btn i {
+  color: #4285f4;
+  font-size: 34px;
+}
+
+@media (max-width: 1100px) {
+  .welcome h1 {
+    font-size: 38px;
+  }
+
+  .login-card {
+    width: 470px;
+  }
+}
+
+@media (max-width: 920px) {
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+  }
+
+  .search-pill {
+    order: 2;
+    max-width: none;
+    width: 100%;
+  }
+
+  .topbar-icons {
+    order: 3;
+    margin-left: 0;
+  }
+
+  .login-layout {
+    flex-direction: column;
+    margin-top: 34px;
+  }
+
+  .welcome h1 {
+    font-size: 34px;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 560px;
+  }
 }
