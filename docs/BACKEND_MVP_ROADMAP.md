@@ -5,7 +5,7 @@
 Habilitar ejecución local para desarrolladores y registro seguro de usuarios (Google), dejando una base sólida para evolucionar a marketplace.
 
 ## Alcance de esta iteración
-
+ Hacer este curso https://www.udemy.com/course/sql-de-cero/
 - Auth con Google
 - Sesión persistente
 - Perfil de usuario (`public.profiles`) con rol inicial `cliente`
