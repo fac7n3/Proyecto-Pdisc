@@ -1,10 +1,11 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./supabase-config.js";
 
 const registerEmailInput = document.getElementById("register-email");
 const registerPasswordInput = document.getElementById("register-password");
 const registerBtn = document.getElementById("register-btn");
 const googleRegisterBtn = document.getElementById("google-register-btn");
-let supabase = null;
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 async function registerWithEmail() {
   const email = registerEmailInput?.value?.trim() ?? "";
@@ -18,9 +19,6 @@ async function registerWithEmail() {
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      emailRedirectTo: `${window.location.origin}/auth/callback`,
-    },
   });
 
   if (error) {
@@ -30,11 +28,11 @@ async function registerWithEmail() {
   }
 
   alert("Cuenta creada. Revisa tu correo para confirmar el registro.");
-  window.location.href = "./login.html";
+  window.location.href = "../pages/login.html";
 }
 
 async function registerWithGoogle() {
-  const redirectTo = `${window.location.origin}/auth/callback`;
+  const redirectTo = `${window.location.origin}/pages/perfil.html`;
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: { redirectTo },
@@ -46,26 +44,5 @@ async function registerWithGoogle() {
   }
 }
 
-async function bootstrap() {
-  try {
-    const response = await fetch("/api/public-config");
-    if (!response.ok) {
-      throw new Error("No se pudo cargar la configuracion publica.");
-    }
-
-    const { supabaseUrl, supabasePublishableKey } = await response.json();
-
-    if (!supabaseUrl || !supabasePublishableKey) {
-      throw new Error("Faltan variables PUBLIC_SUPABASE_*.");
-    }
-
-    supabase = createClient(supabaseUrl, supabasePublishableKey);
-    registerBtn?.addEventListener("click", registerWithEmail);
-    googleRegisterBtn?.addEventListener("click", registerWithGoogle);
-  } catch (error) {
-    console.error(error);
-    alert("No se pudo inicializar el registro. Revisa variables de entorno.");
-  }
-}
-
-bootstrap();
+registerBtn?.addEventListener("click", registerWithEmail);
+googleRegisterBtn?.addEventListener("click", registerWithGoogle);

@@ -1,11 +1,11 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./supabase-config.js";
 
 const emailInput = document.getElementById("correo");
 const passwordInput = document.getElementById("password");
 const localLoginBtn = document.getElementById("local-login-btn");
 const googleLoginBtn = document.getElementById("google-login-btn");
-let supabase = null;
-let supabasePublishableKey = "";
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 async function loginLocal() {
   const email = emailInput?.value?.trim() ?? "";
@@ -24,11 +24,11 @@ async function loginLocal() {
     return;
   }
 
-  window.location.href = "/perfil";
+  window.location.href = "../pages/perfil.html";
 }
 
 async function loginWithGoogle() {
-  const redirectTo = `${window.location.origin}/auth/callback`;
+  const redirectTo = `${window.location.origin}/pages/perfil.html`;
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: { redirectTo },
@@ -40,28 +40,5 @@ async function loginWithGoogle() {
   }
 }
 
-async function bootstrap() {
-  try {
-    const response = await fetch("/api/public-config");
-    if (!response.ok) {
-      throw new Error("No se pudo cargar la configuracion publica.");
-    }
-
-    const { supabaseUrl, supabasePublishableKey: publicKey } = await response.json();
-
-    if (!supabaseUrl || !publicKey) {
-      throw new Error("Faltan variables PUBLIC_SUPABASE_*.");
-    }
-
-    supabasePublishableKey = publicKey;
-    supabase = createClient(supabaseUrl, supabasePublishableKey);
-
-    localLoginBtn?.addEventListener("click", loginLocal);
-    googleLoginBtn?.addEventListener("click", loginWithGoogle);
-  } catch (error) {
-    console.error(error);
-    alert("No se pudo inicializar el login. Revisa variables de entorno.");
-  }
-}
-
-bootstrap();
+localLoginBtn?.addEventListener("click", loginLocal);
+googleLoginBtn?.addEventListener("click", loginWithGoogle);
