@@ -41,55 +41,26 @@
 
     <main class="login-layout">
       <section class="welcome">
-        <h1>Ingresa tu email o telefono para iniciar sesion</h1>
+        <h1>Ingresa tu email y contrasena para iniciar sesion</h1>
       </section>
 
       <section class="login-card">
-        <label for="correo">Email o Telefono</label>
-        <input id="correo" type="text" />
+        <label for="correo">Email</label>
+        <input id="correo" type="email" autocomplete="email" />
 
-        <button class="continue-btn">Continuar</button>
+        <label for="password">Contrasena</label>
+        <input id="password" type="password" autocomplete="current-password" />
 
+        <button id="local-login-btn" class="continue-btn" type="button">Iniciar sesion</button>
         <div class="divider"><span>o</span></div>
-
         <button id="google-login-btn" class="google-btn" type="button">
           <i class="fa-brands fa-google"></i>
-          Iniciar sesion con google
+          Iniciar sesion con Google
         </button>
+        <a class="google-btn" href="./register.html">Crear cuenta</a>
       </section>
     </main>
     
-    <script src="./l"></script>
-
-    <script type="module">
-      import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-      const supabaseUrl = "https://otzhdwuaffcplrveuadc.supabase.co";
-      const supabasePublishableKey = "sb_publishable_I-uMORwPYM9mcmEasubjYg_R9FmgzGJ";
-
-      const googleLoginBtn = document.getElementById("google-login-btn");
-
-      async function loginWithGoogle() {
-        if (!supabasePublishableKey || !supabasePublishableKey.startsWith("sb_publishable_")) {
-          alert("Falta configurar la publishable key en login.html");
-          return;
-        }
-
-        const supabase = createClient(supabaseUrl, supabasePublishableKey);
-        const redirectTo = window.location.origin + window.location.pathname;
-
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: { redirectTo },
-        });
-
-        if (error) {
-          console.error(error);
-          alert("No se pudo iniciar sesion con Google.");
-        }
-      }
-
-      googleLoginBtn?.addEventListener("click", loginWithGoogle);
-    </script>
+    <script type="module" src="./login.js"></script>
   </body>
 </html>
