@@ -3,6 +3,7 @@ import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./supabase-config.js";
 
 const registerEmailInput = document.getElementById("register-email");
 const registerPasswordInput = document.getElementById("register-password");
+const registerNameInput = document.getElementById("register-name");
 const registerBtn = document.getElementById("register-btn");
 const googleRegisterBtn = document.getElementById("google-register-btn");
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
@@ -10,15 +11,23 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 async function registerWithEmail() {
   const email = registerEmailInput?.value?.trim() ?? "";
   const password = registerPasswordInput?.value ?? "";
+  const name = registerNameInput?.value?.trim() ?? "";
+  const accountType = document.querySelector('input[name="account_type"]:checked')?.value ?? "usuario";
 
-  if (!email || !password) {
-    alert("Ingresa email y contrasena para crear tu cuenta.");
+  if (!email || !password || !name) {
+    alert("Ingresa nombre, email y contrasena para crear tu cuenta.");
     return;
   }
 
   const { error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: {
+        full_name: name,
+        account_type: accountType,
+      }
+    }
   });
 
   if (error) {

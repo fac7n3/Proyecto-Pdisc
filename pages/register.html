@@ -3,43 +3,59 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crear Cuenta - Mercado Local</title>
+    <title>Crear Cuenta - Baradero Local</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
-    <link rel="stylesheet" href="../Assets/styles/styles.css" />
+    <link rel="stylesheet" href="../Assets/styles/auth.css" />
   </head>
   <body>
-    <header class="topbar">
-      <button class="icon-square" aria-label="bolsa">
-        <i class="fa-solid fa-bag-shopping"></i>
-      </button>
-      <button class="pill-btn">Categorias</button>
-      <button class="pill-btn">Ofertas</button>
-      <button class="search-pill">Buscar</button>
-    </header>
+    <main class="auth-layout">
+      <div class="auth-header">
+        <h1>Crear Cuenta</h1>
+        <p>Registrate para poder comprar productos y unirte<br>a la comunidad de <strong>Baradero Local</strong></p>
+      </div>
 
-    <main class="login-layout">
-      <section class="welcome">
-        <h1>Crea tu cuenta con email y contrasena</h1>
-      </section>
+      <div class="auth-card">
+        <div class="auth-inputs">
+          <input id="register-email" type="email" placeholder="Correo electrónico" autocomplete="email" class="auth-input" />
+          <input id="register-name" type="text" placeholder="Nombre y apellido" autocomplete="name" class="auth-input" />
+          <input id="register-password" type="password" placeholder="Contraseña" autocomplete="new-password" class="auth-input" />
+        </div>
 
-      <section class="login-card">
-        <label for="register-email">Email</label>
-        <input id="register-email" type="email" autocomplete="email" />
+        <div class="account-type-section">
+          <label class="account-type-label">Tipo de Cuenta</label>
+          
+          <label class="account-type-card" for="type-user">
+            <input type="radio" name="account_type" id="type-user" value="usuario" checked>
+            <div class="account-type-content">
+              <i class="fa-regular fa-user account-icon"></i>
+              <div class="account-text">
+                <span class="account-title">Usuario</span>
+                <span class="account-desc">Descubre los productos y horarios de comercios locales!</span>
+              </div>
+            </div>
+          </label>
 
-        <label for="register-password">Contrasena</label>
-        <input id="register-password" type="password" autocomplete="new-password" />
+          <label class="account-type-card" for="type-shop">
+            <input type="radio" name="account_type" id="type-shop" value="comercio">
+            <div class="account-type-content">
+              <i class="fa-solid fa-bag-shopping account-icon"></i>
+              <div class="account-text">
+                <span class="account-title">Comercio</span>
+                <span class="account-desc">Registra tu negocio</span>
+              </div>
+            </div>
+          </label>
+        </div>
 
-        <button id="register-btn" class="continue-btn" type="button">Crear cuenta</button>
-        <div class="divider"><span>o</span></div>
-        <button id="google-register-btn" class="google-btn" type="button">
-          <i class="fa-brands fa-google"></i>
-          Crear cuenta con Google
-        </button>
-        <a class="google-btn" href="./login.html">Ya tengo cuenta</a>
-      </section>
+        <button id="register-btn" class="auth-btn auth-btn-primary" type="button">Crear cuenta</button>
+      </div>
+      
+      <div class="auth-footer">
+        ¿Ya tienes una cuenta? <a href="./login.html">Inicia sesión aquí</a>
+      </div>
     </main>
 
     <script type="module" src="../js/register.js"></script>
