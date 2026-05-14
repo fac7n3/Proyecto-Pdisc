@@ -12,7 +12,7 @@ async function registerWithEmail() {
   const email = registerEmailInput?.value?.trim() ?? "";
   const password = registerPasswordInput?.value ?? "";
   const name = registerNameInput?.value?.trim() ?? "";
-  const accountType = document.querySelector('input[name="account_type"]:checked')?.value ?? "usuario";
+  const accountType = document.querySelector('input[name="account_type"]:checked')?.value ?? "cliente";
 
   if (!email || !password || !name) {
     alert("Ingresa nombre, email y contrasena para crear tu cuenta.");
