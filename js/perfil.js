@@ -10,28 +10,45 @@ const logoutBtn = document.getElementById("logout-btn");
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 async function renderSession() {
-  const { data, error } = await supabase.auth.getSession();
+  let profileData;
 
-  if (error || !data.session) {
+  try {
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error || !data?.session) {
+      window.location.href = "../pages/login.html";
+      return;
+    }
+
+    const profileResponse = await supabase
+      .from("profiles")
+      .select("id, email, full_name, role")
+      .single();
+
+    if (profileResponse.error) {
+      console.error(profileResponse.error);
+      window.location.href = "../pages/login.html";
+      return;
+    }
+
+    profileData = profileResponse.data;
+  } catch (err) {
+    console.error("Authentication error:", err);
     window.location.href = "../pages/login.html";
     return;
   }
 
-  const profileResponse = await supabase
-    .from("profiles")
-    .select("id, email, full_name, role")
-    .single();
+  const role = profileData.role ?? "cliente";
+  sessionStatus.textContent = "Sesión iniciada correctamente.";
+  userEmail.textContent = profileData.email ?? "sin email";
+  userName.textContent = profileData.full_name ?? "-";
+  userRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
 
-  if (profileResponse.error) {
-    console.error(profileResponse.error);
-    window.location.href = "../pages/login.html";
-    return;
+  const roleBadge = document.getElementById("user-role-badge");
+  if (roleBadge) {
+    roleBadge.textContent = role;
+    roleBadge.className = `profile-badge ${role.toLowerCase()}`;
   }
-
-  sessionStatus.textContent = "Sesion iniciada correctamente.";
-  userEmail.textContent = `Email: ${profileResponse.data.email ?? "sin email"}`;
-  userName.textContent = `Nombre: ${profileResponse.data.full_name ?? "-"}`;
-  userRole.textContent = `Rol: ${profileResponse.data.role ?? "cliente"}`;
 }
 
 async function logout() {

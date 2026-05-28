@@ -8,14 +8,33 @@ const registerBtn = document.getElementById("register-btn");
 const googleRegisterBtn = document.getElementById("google-register-btn");
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+function showMessage(text, type = "error") {
+  const msgDiv = document.getElementById("auth-message");
+  if (!msgDiv) return;
+
+  const icon = type === "error"
+    ? '<i class="fa-solid fa-circle-exclamation"></i>'
+    : '<i class="fa-solid fa-circle-check"></i>';
+
+  msgDiv.innerHTML = `${icon} <span>${text}</span>`;
+  msgDiv.className = `auth-message ${type}`;
+}
+
+function hideMessage() {
+  const msgDiv = document.getElementById("auth-message");
+  if (!msgDiv) return;
+  msgDiv.className = "auth-message hidden";
+}
+
 async function registerWithEmail() {
+  hideMessage();
   const email = registerEmailInput?.value?.trim() ?? "";
   const password = registerPasswordInput?.value ?? "";
   const name = registerNameInput?.value?.trim() ?? "";
   const accountType = document.querySelector('input[name="account_type"]:checked')?.value ?? "cliente";
 
   if (!email || !password || !name) {
-    alert("Ingresa nombre, email y contrasena para crear tu cuenta.");
+    showMessage("Ingresa nombre, correo y contraseña para crear tu cuenta.", "error");
     return;
   }
 
@@ -32,15 +51,29 @@ async function registerWithEmail() {
 
   if (error) {
     console.error(error);
-    alert("No se pudo crear la cuenta. Verifica los datos e intenta de nuevo.");
+    showMessage("No se pudo crear la cuenta. Verifica los datos e intenta de nuevo.", "error");
     return;
   }
 
-  alert("Cuenta creada. Revisa tu correo para confirmar el registro.");
-  window.location.href = "../pages/login.html";
+  // Disable controls and button to prevent multiple submissions
+  if (registerEmailInput) registerEmailInput.disabled = true;
+  if (registerPasswordInput) registerPasswordInput.disabled = true;
+  if (registerNameInput) registerNameInput.disabled = true;
+  if (registerBtn) {
+    registerBtn.disabled = true;
+    registerBtn.style.opacity = "0.6";
+    registerBtn.style.cursor = "not-allowed";
+  }
+
+  showMessage("Cuenta creada con éxito. Revisa tu correo para confirmar el registro.", "success");
+  
+  setTimeout(() => {
+    window.location.href = "../pages/login.html";
+  }, 3500);
 }
 
 async function registerWithGoogle() {
+  hideMessage();
   const redirectTo = `${window.location.origin}/pages/perfil.html`;
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -49,7 +82,7 @@ async function registerWithGoogle() {
 
   if (error) {
     console.error(error);
-    alert("No se pudo iniciar registro con Google.");
+    showMessage("No se pudo iniciar el registro con Google.", "error");
   }
 }
 

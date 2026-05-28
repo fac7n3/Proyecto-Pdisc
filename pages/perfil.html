@@ -3,23 +3,59 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Perfil - Mercado Local</title>
-    <link rel="stylesheet" href="../Assets/styles/styles.css" />
+    <title>Mi Perfil - Baradero Local</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../Assets/styles/auth.css" />
   </head>
   <body>
-    <main class="login-layout">
-      <section class="welcome">
-        <h1>Perfil</h1>
-      </section>
+    <main class="auth-layout">
+      <div class="auth-header">
+        <h1>Mi Perfil</h1>
+        <p id="session-status">Cargando sesión...</p>
+      </div>
 
-      <section class="login-card">
-        <p id="session-status">Cargando sesion...</p>
-        <p id="user-name"></p>
-        <p id="user-email"></p>
-        <p id="user-role"></p>
-        <button id="logout-btn" class="continue-btn" type="button">Cerrar sesion</button>
-        <a class="google-btn" href="./login.html">Volver a login</a>
-      </section>
+      <div class="auth-card">
+        <div class="profile-avatar-section">
+          <div class="profile-avatar">
+            <i class="fa-regular fa-user"></i>
+          </div>
+          <div id="user-role-badge" class="profile-badge">Cargando...</div>
+        </div>
+
+        <div class="profile-details">
+          <div class="profile-detail-item">
+            <span class="profile-detail-label">
+              <i class="fa-regular fa-envelope"></i> Correo electrónico
+            </span>
+            <span id="user-email" class="profile-detail-value">-</span>
+          </div>
+
+          <div class="profile-detail-item">
+            <span class="profile-detail-label">
+              <i class="fa-regular fa-id-card"></i> Nombre y apellido
+            </span>
+            <span id="user-name" class="profile-detail-value">-</span>
+          </div>
+
+          <div class="profile-detail-item">
+            <span class="profile-detail-label">
+              <i class="fa-solid fa-user-gear"></i> Rol de usuario
+            </span>
+            <span id="user-role" class="profile-detail-value">-</span>
+          </div>
+        </div>
+
+        <button id="logout-btn" class="auth-btn auth-btn-primary" type="button">
+          <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i> Cerrar sesión
+        </button>
+
+        <a href="./login.html" class="auth-btn auth-btn-ghost">
+          <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i> Volver a login
+        </a>
+      </div>
     </main>
 
     <script type="module" src="../js/perfil.js"></script>

@@ -7,12 +7,31 @@ const localLoginBtn = document.getElementById("local-login-btn");
 const googleLoginBtn = document.getElementById("google-login-btn");
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+function showMessage(text, type = "error") {
+  const msgDiv = document.getElementById("auth-message");
+  if (!msgDiv) return;
+
+  const icon = type === "error"
+    ? '<i class="fa-solid fa-circle-exclamation"></i>'
+    : '<i class="fa-solid fa-circle-check"></i>';
+
+  msgDiv.innerHTML = `${icon} <span>${text}</span>`;
+  msgDiv.className = `auth-message ${type}`;
+}
+
+function hideMessage() {
+  const msgDiv = document.getElementById("auth-message");
+  if (!msgDiv) return;
+  msgDiv.className = "auth-message hidden";
+}
+
 async function loginLocal() {
+  hideMessage();
   const email = emailInput?.value?.trim() ?? "";
   const password = passwordInput?.value ?? "";
 
   if (!email || !password) {
-    alert("Ingresa email y contrasena para continuar.");
+    showMessage("Ingresa correo y contraseña para continuar.", "error");
     return;
   }
 
@@ -20,7 +39,7 @@ async function loginLocal() {
 
   if (error) {
     console.error(error);
-    alert("No se pudo iniciar sesion. Verifica email y contrasena.");
+    showMessage("No se pudo iniciar sesión. Verifica correo y contraseña.", "error");
     return;
   }
 
@@ -28,6 +47,7 @@ async function loginLocal() {
 }
 
 async function loginWithGoogle() {
+  hideMessage();
   const redirectTo = `${window.location.origin}/pages/perfil.html`;
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -36,7 +56,7 @@ async function loginWithGoogle() {
 
   if (error) {
     console.error(error);
-    alert("No se pudo iniciar sesion con Google.");
+    showMessage("No se pudo iniciar sesión con Google.", "error");
   }
 }
 
