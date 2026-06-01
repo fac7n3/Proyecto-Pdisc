@@ -400,3 +400,35 @@ body {
   border: 0;
 }
 
+/* Password Visibility Toggle wrapper and button */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper .auth-input {
+  padding-right: 48px;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #718096;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+  transition: color 0.2s;
+}
+
+.password-toggle-btn:hover {
+  color: #284175;
+}
+

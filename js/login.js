@@ -201,6 +201,24 @@ loginForm?.addEventListener("submit", (e) => {
 
 googleLoginBtn?.addEventListener("click", loginWithGoogle);
 
+// Toggle password visibility
+const togglePasswordBtn = document.getElementById("toggle-password");
+togglePasswordBtn?.addEventListener("click", () => {
+  const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+  passwordInput.setAttribute("type", type);
+  
+  const icon = togglePasswordBtn.querySelector("i");
+  if (icon) {
+    if (type === "text") {
+      icon.className = "fa-regular fa-eye-slash";
+      togglePasswordBtn.setAttribute("aria-label", "Ocultar contraseña");
+    } else {
+      icon.className = "fa-regular fa-eye";
+      togglePasswordBtn.setAttribute("aria-label", "Mostrar contraseña");
+    }
+  }
+});
+
 // Inicialización de la página
 checkExistingSession();
 checkUrlErrors();

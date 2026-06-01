@@ -27,8 +27,13 @@
             <label for="register-name" class="sr-only">Nombre y apellido</label>
             <input id="register-name" type="text" placeholder="Nombre y apellido" autocomplete="name" class="auth-input" required />
             
-            <label for="register-password" class="sr-only">Contraseña</label>
-            <input id="register-password" type="password" placeholder="Contraseña" autocomplete="new-password" class="auth-input" required />
+            <div class="password-wrapper">
+              <label for="register-password" class="sr-only">Contraseña</label>
+              <input id="register-password" type="password" placeholder="Contraseña" autocomplete="new-password" class="auth-input" required />
+              <button type="button" class="password-toggle-btn" id="toggle-register-password" aria-label="Mostrar contraseña">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
           </div>
 
           <div class="account-type-section">

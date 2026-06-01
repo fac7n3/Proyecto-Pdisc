@@ -19,8 +19,13 @@
             <label for="correo" class="sr-only">Correo electrónico</label>
             <input id="correo" type="email" placeholder="Correo electrónico" autocomplete="email" class="auth-input" required />
             
-            <label for="password" class="sr-only">Contraseña</label>
-            <input id="password" type="password" placeholder="Contraseña" autocomplete="current-password" class="auth-input" required />
+            <div class="password-wrapper">
+              <label for="password" class="sr-only">Contraseña</label>
+              <input id="password" type="password" placeholder="Contraseña" autocomplete="current-password" class="auth-input" required />
+              <button type="button" class="password-toggle-btn" id="toggle-password" aria-label="Mostrar contraseña">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
           </div>
           
           <button id="local-login-btn" class="auth-btn auth-btn-primary" type="submit">Iniciar sesión</button>

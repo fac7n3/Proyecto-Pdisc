@@ -258,6 +258,24 @@ registerForm?.addEventListener("submit", (e) => {
 
 googleRegisterBtn?.addEventListener("click", registerWithGoogle);
 
+// Toggle password visibility
+const toggleRegisterPasswordBtn = document.getElementById("toggle-register-password");
+toggleRegisterPasswordBtn?.addEventListener("click", () => {
+  const type = registerPasswordInput.getAttribute("type") === "password" ? "text" : "password";
+  registerPasswordInput.setAttribute("type", type);
+  
+  const icon = toggleRegisterPasswordBtn.querySelector("i");
+  if (icon) {
+    if (type === "text") {
+      icon.className = "fa-regular fa-eye-slash";
+      toggleRegisterPasswordBtn.setAttribute("aria-label", "Ocultar contraseña");
+    } else {
+      icon.className = "fa-regular fa-eye";
+      toggleRegisterPasswordBtn.setAttribute("aria-label", "Mostrar contraseña");
+    }
+  }
+});
+
 // Inicialización de la página
 checkExistingSession();
 checkUrlErrors();
