@@ -173,11 +173,11 @@ begin
     new.email,
     coalesce(new.raw_user_meta_data ->> 'full_name', new.raw_user_meta_data ->> 'name'),
     new.raw_user_meta_data ->> 'avatar_url',
-    case lower(coalesce(new.raw_user_meta_data ->> 'account_type', 'cliente'))
+    (case lower(coalesce(new.raw_user_meta_data ->> 'account_type', 'cliente'))
       when 'vendedor' then 'vendedor'
       when 'comercio' then 'vendedor'
       else 'cliente'
-    end
+    end)::public.app_role
   )
   on conflict (id) do update
     set email = excluded.email,
