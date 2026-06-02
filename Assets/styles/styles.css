@@ -1,29 +1,47 @@
+:root {
+  --primary-color: #3f85ba;
+  --primary-light: #78b4eb;
+  --primary-dark: #284175;
+  --primary-hover: #1f3460;
+  
+  --bg-color: #dfdfdf;
+  --bg-input: #3f6d99;
+  
+  --text-dark: #111111;
+  --text-light: #ffffff;
+  --text-muted: #686868;
+  
+  --border-color: #5286b5;
+  --font-main: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-main);
 }
 
 body {
   min-height: 100vh;
-  background: #dfdfdf;
+  background: var(--bg-color);
 }
 
 .topbar {
   width: 100%;
-  height: 54px;
-  background: #3f85ba;
+  height: 3.375rem; /* 54px */
+  background: var(--primary-color);
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 8px 14px;
+  gap: 0.875rem;
+  padding: 0.5rem 0.875rem;
 }
 
 .icon-square {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: 0.5rem;
   border: none;
   background: #e8e8e8;
   color: #1f1f1f;
@@ -33,47 +51,47 @@ body {
 .pill-btn,
 .search-pill {
   border: none;
-  border-radius: 20px;
+  border-radius: 1.25rem;
   background: #f6f6f6;
   color: #2b6fa2;
   font-weight: 600;
-  font-size: 15px;
-  height: 32px;
+  font-size: 0.9375rem; /* 15px */
+  height: 2rem;
   cursor: pointer;
 }
 
 .pill-btn {
-  width: 130px;
+  width: 8.125rem; /* 130px */
 }
 
 .search-pill {
   flex: 1;
-  min-width: 220px;
-  max-width: 420px;
+  min-width: 13.75rem;
+  max-width: 26.25rem;
 }
 
 .topbar-icons {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 0.875rem;
 }
 
 .icon-btn {
   border: none;
   background: transparent;
-  color: #ffffff;
-  font-size: 27px;
+  color: var(--text-light);
+  font-size: 1.6875rem; /* 27px */
   cursor: pointer;
 }
 
 .login-layout {
-  width: min(1200px, 95%);
-  margin: 56px auto 0;
+  width: min(75rem, 95%); /* 1200px */
+  margin: 3.5rem auto 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 36px;
+  gap: 2.25rem;
 }
 
 .welcome {
@@ -83,60 +101,60 @@ body {
 }
 
 .welcome h1 {
-  max-width: 360px;
+  max-width: 22.5rem;
   text-align: center;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 48px;
+  font-family: var(--font-serif);
+  font-size: 3rem; /* 48px */
   font-weight: 400;
   line-height: 1.15;
-  color: #111111;
+  color: var(--text-dark);
 }
 
 .login-card {
-  width: 520px;
-  background: #78b4eb;
-  border-radius: 16px;
-  padding: 18px 16px 22px;
+  width: 32.5rem; /* 520px */
+  background: var(--primary-light);
+  border-radius: 1rem;
+  padding: 1.125rem 1rem 1.375rem;
 }
 
 .login-card label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   color: #0f2d49;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 34px;
+  font-family: var(--font-serif);
+  font-size: 2.125rem; /* 34px */
 }
 
 .login-card input {
   width: 100%;
-  height: 56px;
+  height: 3.5rem; /* 56px */
   border: none;
-  border-radius: 28px;
-  background: #3f6d99;
-  margin-bottom: 12px;
-  padding: 0 18px;
-  color: #ffffff;
-  font-size: 18px;
+  border-radius: 1.75rem;
+  background: var(--bg-input);
+  margin-bottom: 0.75rem;
+  padding: 0 1.125rem;
+  color: var(--text-light);
+  font-size: 1.125rem; /* 18px */
 }
 
 .continue-btn {
   width: 100%;
-  height: 56px;
+  height: 3.5rem;
   border: none;
-  border-radius: 28px;
-  background: #3f6d99;
-  color: #111111;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 38px;
+  border-radius: 1.75rem;
+  background: var(--bg-input);
+  color: var(--text-dark);
+  font-family: var(--font-serif);
+  font-size: 2.375rem; /* 38px */
   cursor: pointer;
 }
 
 .divider {
-  margin: 12px 0;
+  margin: 0.75rem 0;
   display: flex;
   align-items: center;
   color: #1f3650;
-  font-size: 30px;
+  font-size: 1.875rem; /* 30px */
 }
 
 .divider::before,
@@ -144,41 +162,41 @@ body {
   content: "";
   flex: 1;
   height: 2px;
-  background: #5286b5;
+  background: var(--border-color);
 }
 
 .divider span {
-  margin: 0 10px;
+  margin: 0 0.625rem;
 }
 
 .google-btn {
   width: 100%;
-  height: 56px;
+  height: 3.5rem;
   border: none;
-  border-radius: 28px;
+  border-radius: 1.75rem;
   background: #efefef;
-  color: #686868;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 35px;
+  color: var(--text-muted);
+  font-family: var(--font-serif);
+  font-size: 2.1875rem; /* 35px */
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   cursor: pointer;
 }
 
 .google-btn i {
   color: #4285f4;
-  font-size: 34px;
+  font-size: 2.125rem;
 }
 
 @media (max-width: 1100px) {
   .welcome h1 {
-    font-size: 38px;
+    font-size: 2.375rem; /* 38px */
   }
 
   .login-card {
-    width: 470px;
+    width: 29.375rem; /* 470px */
   }
 }
 
@@ -201,16 +219,15 @@ body {
 
   .login-layout {
     flex-direction: column;
-    margin-top: 34px;
+    margin-top: 2.125rem;
   }
 
   .welcome h1 {
-    font-size: 34px;
+    font-size: 2.125rem; /* 34px */
   }
 
   .login-card {
     width: 100%;
-    max-width: 560px;
+    max-width: 35rem; /* 560px */
   }
 }
-
