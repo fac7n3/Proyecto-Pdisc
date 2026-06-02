@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Baradero Local — Comprá productos de comercios locales de Baradero y recibilos en tu casa. Almacén, panadería, verdulería y mucho más." />
+    <title>Baradero Local — Tu mercado online de Baradero</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="../Assets/styles/home.css" />
+  </head>
+  <body>
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+      <div class="navbar__top">
+        <!-- Logo -->
+        <a href="./home.html" class="navbar__logo" id="navbar-logo">
+          <span class="navbar__logo-icon">
+            <svg viewBox="0 0 100 100" width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50 0 C 22.4 0 0 22.4 0 50 C 0 75 50 100 50 100 C 50 100 100 75 100 50 C 100 22.4 77.6 0 50 0 Z" fill="#2d4a7c"/>
+              <rect x="23" y="25" width="9" height="30" fill="#ffffff"/>
+              <path d="M 6 65 L 50 33 L 94 65" stroke="#ffffff" stroke-width="11" stroke-linecap="butt" stroke-linejoin="miter"/>
+            </svg>
+          </span>
+          <div class="navbar__logo-text">
+            <span class="navbar__logo-title">Baradero Local</span>
+            <span class="navbar__logo-subtitle">Baradero, más cerca que nunca ashe</span>
+          </div>
+        </a>
+
+        <!-- Actions -->
+        <div class="navbar__actions">
+          <a href="./perfil.html" class="navbar__action-circle" id="nav-profile" aria-label="Mi cuenta">u</a>
+          <a href="#" class="navbar__action-circle" id="nav-cart" aria-label="Carrito de compras">c</a>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="navbar__search-wrapper">
+        <div class="navbar__search">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <label for="search-input" class="sr-only">¿Qué estás buscando?</label>
+          <input type="search" id="search-input" class="navbar__search-input" placeholder="¿Qué estás buscando?" autocomplete="off" />
+        </div>
+      </div>
+    </nav>
+
+    <!-- ====== CATEGORY BAR ====== -->
+    <div class="category-bar" role="navigation" aria-label="Categorías">
+      <div class="category-bar__inner">
+        <a href="#" class="category-bar__item category-bar__item--active" id="cat-inicio">Inicio</a>
+        <a href="#" class="category-bar__item" id="cat-ofertas">Ofertas</a>
+        <a href="#" class="category-bar__item" id="cat-verduras">Verduras</a>
+        <a href="#" class="category-bar__item" id="cat-carnes">Carnes</a>
+        <a href="#" class="category-bar__item" id="cat-lacteos">Lácteos</a>
+        <a href="#" class="category-bar__item" id="cat-farmacias">Farmacias</a>
+        
+        <!-- Dropdown -->
+        <div class="category-bar__dropdown">
+          <a href="#" class="category-bar__item" id="cat-mas">
+            Más <i class="fa-solid fa-chevron-down" style="font-size:0.625rem; opacity:0.5; margin-left:0.25rem;"></i>
+          </a>
+          <div class="category-bar__dropdown-menu" role="menu">
+            <a href="#" class="category-bar__dropdown-item" role="menuitem">Limpieza</a>
+            <a href="#" class="category-bar__dropdown-item" role="menuitem">Mascotas</a>
+            <a href="#" class="category-bar__dropdown-item" role="menuitem">Bebés</a>
+            <a href="#" class="category-bar__dropdown-item" role="menuitem">Indumentaria</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== MAIN CONTENT ====== -->
+    <main>
+
+      <!-- Hero Banner -->
+      <section class="hero" aria-label="Banner promocional">
+        <div class="hero__banner">
+          <img src="../Assets/images/banners/hero_banner.png" alt="Productos frescos de Baradero" loading="eager" />
+          <div class="hero__banner-overlay">
+            <h1 class="hero__banner-title">Comprá local,<br />recibí en casa</h1>
+            <p class="hero__banner-subtitle">Productos frescos de los comercios de Baradero directo a tu puerta.</p>
+            <a href="#productos" class="hero__banner-cta">
+              Explorar productos <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Farmacia de turno -->
+      <div class="farmacia-turno">
+        <strong>Farmacia de turno hoy:</strong> nombre de la farmac | direccion ahse 123 | Hasta las 20:00
+      </div>
+
+      <!-- Products Section -->
+      <section class="products" id="productos" aria-label="Productos recomendados">
+        <div class="section-header">
+          <h2 class="section-header__title">Productos recomendados</h2>
+          <a href="#" class="section-header__link" id="ver-mas-link">Ver más <i class="fa-solid fa-chevron-right" style="font-size:0.625rem"></i></a>
+        </div>
+
+        <div class="products__grid" id="products-grid">
+
+          <!-- Product 1 -->
+          <article class="product-card" id="product-yerba">
+            <span class="product-card__badge product-card__badge--envio">Envío gratis</span>
+            <div class="product-card__image">
+              <img src="../Assets/images/products/yerba.png" alt="Yerba Mate Premium 1kg" loading="lazy" />
+              <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
+            </div>
+            <div class="product-card__body">
+              <span class="product-card__shop"><i class="fa-solid fa-store"></i> Almacén Don José</span>
+              <h3 class="product-card__name">Yerba Mate Premium 1kg</h3>
+              <div class="product-card__price-row">
+                <span class="product-card__price">$2.850</span>
+                <span class="product-card__price-old">$3.200</span>
+                <span class="product-card__discount">-11%</span>
+              </div>
+              <span class="product-card__shipping"><i class="fa-solid fa-truck"></i> Envío gratis</span>
+              <div class="product-card__rating">
+                <div class="product-card__stars">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </div>
+                <span class="product-card__rating-count">(128)</span>
+              </div>
+              <button class="product-card__add" data-product-id="1"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+            </div>
+          </article>
+
+          <!-- Product 2 -->
+          <article class="product-card" id="product-pan">
+            <div class="product-card__image">
+              <img src="../Assets/images/products/bread.png" alt="Pan Artesanal Casero" loading="lazy" />
+              <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
+            </div>
+            <div class="product-card__body">
+              <span class="product-card__shop"><i class="fa-solid fa-store"></i> Panadería La Espiga</span>
+              <h3 class="product-card__name">Pan Artesanal Casero 750g</h3>
+              <div class="product-card__price-row">
+                <span class="product-card__price">$1.500</span>
+              </div>
+              <span class="product-card__shipping"><i class="fa-solid fa-truck"></i> Envío $350</span>
+              <div class="product-card__rating">
+                <div class="product-card__stars">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <span class="product-card__rating-count">(64)</span>
+              </div>
+              <button class="product-card__add" data-product-id="2"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+            </div>
+          </article>
+
+          <!-- Product 3 -->
+          <article class="product-card" id="product-cafe">
+            <span class="product-card__badge product-card__badge--oferta">-20%</span>
+            <div class="product-card__image">
+              <img src="../Assets/images/products/coffee.png" alt="Café Molido Premium 500g" loading="lazy" />
+              <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
+            </div>
+            <div class="product-card__body">
+              <span class="product-card__shop"><i class="fa-solid fa-store"></i> Almacén Don José</span>
+              <h3 class="product-card__name">Café Molido Premium 500g</h3>
+              <div class="product-card__price-row">
+                <span class="product-card__price">$5.990</span>
+                <span class="product-card__price-old">$7.490</span>
+                <span class="product-card__discount">-20%</span>
+              </div>
+              <span class="product-card__shipping"><i class="fa-solid fa-truck"></i> Envío gratis</span>
+              <div class="product-card__rating">
+                <div class="product-card__stars">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star empty"></i>
+                </div>
+                <span class="product-card__rating-count">(42)</span>
+              </div>
+              <button class="product-card__add" data-product-id="3"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+            </div>
+          </article>
+
+          <!-- Product 4 -->
+          <article class="product-card" id="product-dulce">
+            <div class="product-card__image">
+              <img src="../Assets/images/products/dulce.png" alt="Dulce de Leche 1kg" loading="lazy" />
+              <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
+            </div>
+            <div class="product-card__body">
+              <span class="product-card__shop"><i class="fa-solid fa-store"></i> Almacén La Esquina</span>
+              <h3 class="product-card__name">Dulce de Leche Artesanal 1kg</h3>
+              <div class="product-card__price-row">
+                <span class="product-card__price">$4.200</span>
+              </div>
+              <span class="product-card__shipping"><i class="fa-solid fa-truck"></i> Envío $350</span>
+              <div class="product-card__rating">
+                <div class="product-card__stars">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <span class="product-card__rating-count">(215)</span>
+              </div>
+              <button class="product-card__add" data-product-id="4"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+            </div>
+          </article>
+
+          <!-- Product 5 -->
+          <article class="product-card" id="product-leche">
+            <span class="product-card__badge product-card__badge--envio">Envío gratis</span>
+            <div class="product-card__image">
+              <img src="../Assets/images/products/milk.png" alt="Leche Entera 1L" loading="lazy" />
+              <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
+            </div>
+            <div class="product-card__body">
+              <span class="product-card__shop"><i class="fa-solid fa-store"></i> Super Baradero</span>
+              <h3 class="product-card__name">Leche Entera 1L</h3>
+              <div class="product-card__price-row">
+                <span class="product-card__price">$890</span>
+              </div>
+              <span class="product-card__shipping"><i class="fa-solid fa-truck"></i> Envío gratis</span>
+              <div class="product-card__rating">
+                <div class="product-card__stars">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star empty"></i>
+                </div>
+                <span class="product-card__rating-count">(89)</span>
+              </div>
+              <button class="product-card__add" data-product-id="5"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+            </div>
+          </article>
+
+          <!-- Product 6 -->
+          <article class="product-card" id="product-galletitas">
+            <span class="product-card__badge product-card__badge--oferta">-15%</span>
+            <div class="product-card__image">
+              <img src="../Assets/images/products/galletitas.png" alt="Galletitas de Agua x3" loading="lazy" />
+              <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
+            </div>
+            <div class="product-card__body">
+              <span class="product-card__shop"><i class="fa-solid fa-store"></i> Super Baradero</span>
+              <h3 class="product-card__name">Galletitas de Agua Pack x3</h3>
+              <div class="product-card__price-row">
+                <span class="product-card__price">$1.790</span>
+                <span class="product-card__price-old">$2.100</span>
+                <span class="product-card__discount">-15%</span>
+              </div>
+              <span class="product-card__shipping"><i class="fa-solid fa-truck"></i> Envío $350</span>
+              <div class="product-card__rating">
+                <div class="product-card__stars">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star empty"></i>
+                </div>
+                <span class="product-card__rating-count">(31)</span>
+              </div>
+              <button class="product-card__add" data-product-id="6"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+            </div>
+          </article>
+
+          <!-- Product 7 -->
+          <article class="product-card" id="product-limpieza">
+            <div class="product-card__image">
+              <img src="../Assets/images/products/cleaning.png" alt="Limpiador Multiuso" loading="lazy" />
+              <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
+            </div>
+            <div class="product-card__body">
+              <span class="product-card__shop"><i class="fa-solid fa-store"></i> Almacén La Esquina</span>
+              <h3 class="product-card__name">Limpiador Multiuso 900ml</h3>
+              <div class="product-card__price-row">
+                <span class="product-card__price">$1.350</span>
+              </div>
+              <span class="product-card__shipping"><i class="fa-solid fa-truck"></i> Envío $350</span>
+              <div class="product-card__rating">
+                <div class="product-card__stars">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star empty"></i>
+                </div>
+                <span class="product-card__rating-count">(17)</span>
+              </div>
+              <button class="product-card__add" data-product-id="7"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+            </div>
+          </article>
+
+          <!-- Product 8 (duplicate of yerba as variant) -->
+          <article class="product-card" id="product-yerba-2">
+            <div class="product-card__image">
+              <img src="../Assets/images/products/yerba.png" alt="Yerba Mate Suave 500g" loading="lazy" />
+              <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
+            </div>
+            <div class="product-card__body">
+              <span class="product-card__shop"><i class="fa-solid fa-store"></i> Almacén Don José</span>
+              <h3 class="product-card__name">Yerba Mate Suave 500g</h3>
+              <div class="product-card__price-row">
+                <span class="product-card__price">$1.650</span>
+              </div>
+              <span class="product-card__shipping"><i class="fa-solid fa-truck"></i> Envío $350</span>
+              <div class="product-card__rating">
+                <div class="product-card__stars">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </div>
+                <span class="product-card__rating-count">(73)</span>
+              </div>
+              <button class="product-card__add" data-product-id="8"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="footer">
+      <div class="footer__inner">
+        <div>
+          <div class="footer__brand-name">Baradero Local</div>
+          <p class="footer__brand-desc">El mercado online de Baradero. Comprá productos de comercios locales y recibilos en tu casa.</p>
+        </div>
+        <div>
+          <div class="footer__col-title">Comprá</div>
+          <nav class="footer__links">
+            <a href="#" class="footer__link">Ofertas del día</a>
+            <a href="#" class="footer__link">Supermercado</a>
+            <a href="#" class="footer__link">Categorías</a>
+            <a href="#" class="footer__link">Comercios</a>
+          </nav>
+        </div>
+        <div>
+          <div class="footer__col-title">Vendé</div>
+          <nav class="footer__links">
+            <a href="#" class="footer__link">Registrar comercio</a>
+            <a href="#" class="footer__link">Cómo vender</a>
+            <a href="#" class="footer__link">Costos y comisiones</a>
+          </nav>
+        </div>
+        <div>
+          <div class="footer__col-title">Ayuda</div>
+          <nav class="footer__links">
+            <a href="#" class="footer__link">Contacto</a>
+            <a href="#" class="footer__link">Preguntas frecuentes</a>
+            <a href="#" class="footer__link">Devoluciones</a>
+            <a href="#" class="footer__link">Términos</a>
+          </nav>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 Baradero Local. Todos los derechos reservados.</span>
+        <div class="footer__socials">
+          <a href="#" class="footer__social" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="footer__social" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a href="#" class="footer__social" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scroll to top -->
+    <button class="scroll-top" id="scroll-top-btn" aria-label="Volver arriba">
+      <i class="fa-solid fa-chevron-up"></i>
+    </button>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast" aria-live="polite" role="status"></div>
+
+    <!-- Accessibility helper -->
+    <style>
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0,0,0,0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+
+    <script type="module" src="../js/home.js"></script>
+  </body>
+</html>
