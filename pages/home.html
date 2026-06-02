@@ -64,10 +64,12 @@
             Más <i class="fa-solid fa-chevron-down" style="font-size:0.625rem; opacity:0.5; margin-left:0.25rem;"></i>
           </a>
           <div class="category-bar__dropdown-menu" role="menu">
-            <a href="#" class="category-bar__dropdown-item" role="menuitem">Limpieza</a>
-            <a href="#" class="category-bar__dropdown-item" role="menuitem">Mascotas</a>
-            <a href="#" class="category-bar__dropdown-item" role="menuitem">Bebés</a>
-            <a href="#" class="category-bar__dropdown-item" role="menuitem">Indumentaria</a>
+            <a href="#" class="category-bar__dropdown-item" role="menuitem" data-filter="limpieza">Limpieza</a>
+            <a href="#" class="category-bar__dropdown-item" role="menuitem" data-filter="mascotas">Mascotas</a>
+            <a href="#" class="category-bar__dropdown-item" role="menuitem" data-filter="bebes">Bebés</a>
+            <a href="#" class="category-bar__dropdown-item" role="menuitem" data-filter="indumentaria">Indumentaria</a>
+            <div class="dropdown-divider" style="height: 1px; background: var(--bl-border); margin: 4px 0;"></div>
+            <a href="./vender.html" class="category-bar__dropdown-item" role="menuitem" style="color: var(--bl-primary); font-weight: 600;"><i class="fa-solid fa-store" style="color: inherit;"></i> Vender</a>
           </div>
         </div>
       </div>
@@ -105,7 +107,7 @@
         <div class="products__grid" id="products-grid">
 
           <!-- Product 1 -->
-          <article class="product-card" id="product-yerba">
+          <article class="product-card" id="product-yerba" data-category="supermercado ofertas">
             <span class="product-card__badge product-card__badge--envio">Envío gratis</span>
             <div class="product-card__image">
               <img src="../Assets/images/products/yerba.png" alt="Yerba Mate Premium 1kg" loading="lazy" />
@@ -131,7 +133,7 @@
           </article>
 
           <!-- Product 2 -->
-          <article class="product-card" id="product-pan">
+          <article class="product-card" id="product-pan" data-category="carnes">
             <div class="product-card__image">
               <img src="../Assets/images/products/bread.png" alt="Pan Artesanal Casero" loading="lazy" />
               <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
@@ -154,7 +156,7 @@
           </article>
 
           <!-- Product 3 -->
-          <article class="product-card" id="product-cafe">
+          <article class="product-card" id="product-cafe" data-category="supermercado ofertas">
             <span class="product-card__badge product-card__badge--oferta">-20%</span>
             <div class="product-card__image">
               <img src="../Assets/images/products/coffee.png" alt="Café Molido Premium 500g" loading="lazy" />
@@ -180,7 +182,7 @@
           </article>
 
           <!-- Product 4 -->
-          <article class="product-card" id="product-dulce">
+          <article class="product-card" id="product-dulce" data-category="supermercado">
             <div class="product-card__image">
               <img src="../Assets/images/products/dulce.png" alt="Dulce de Leche 1kg" loading="lazy" />
               <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
@@ -203,7 +205,7 @@
           </article>
 
           <!-- Product 5 -->
-          <article class="product-card" id="product-leche">
+          <article class="product-card" id="product-leche" data-category="lacteos">
             <span class="product-card__badge product-card__badge--envio">Envío gratis</span>
             <div class="product-card__image">
               <img src="../Assets/images/products/milk.png" alt="Leche Entera 1L" loading="lazy" />
@@ -227,7 +229,7 @@
           </article>
 
           <!-- Product 6 -->
-          <article class="product-card" id="product-galletitas">
+          <article class="product-card" id="product-galletitas" data-category="supermercado ofertas">
             <span class="product-card__badge product-card__badge--oferta">-15%</span>
             <div class="product-card__image">
               <img src="../Assets/images/products/galletitas.png" alt="Galletitas de Agua x3" loading="lazy" />
@@ -253,7 +255,7 @@
           </article>
 
           <!-- Product 7 -->
-          <article class="product-card" id="product-limpieza">
+          <article class="product-card" id="product-limpieza" data-category="limpieza supermercado">
             <div class="product-card__image">
               <img src="../Assets/images/products/cleaning.png" alt="Limpiador Multiuso" loading="lazy" />
               <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
@@ -276,7 +278,7 @@
           </article>
 
           <!-- Product 8 (duplicate of yerba as variant) -->
-          <article class="product-card" id="product-yerba-2">
+          <article class="product-card" id="product-yerba-2" data-category="supermercado ofertas">
             <div class="product-card__image">
               <img src="../Assets/images/products/yerba.png" alt="Yerba Mate Suave 500g" loading="lazy" />
               <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
@@ -306,9 +308,12 @@
     <!-- ====== FOOTER ====== -->
     <footer class="footer">
       <div class="footer__inner">
-        <div>
-          <div class="footer__brand-name">Baradero Local</div>
-          <p class="footer__brand-desc">El mercado online de Baradero. Comprá productos de comercios locales y recibilos en tu casa.</p>
+        <div class="footer__brand-container">
+          <div class="footer__brand-logo-text">
+            <span class="bl-text-stroke">BARADERO</span>
+            <span class="bl-text-stroke bl-text-stroke--white">LOCAL</span>
+          </div>
+          <p class="footer__brand-slogan">"Mientras otras plataformas conectan personas lejanas, nosotros conectamos vecinos".</p>
         </div>
         <div>
           <div class="footer__col-title">Comprá</div>

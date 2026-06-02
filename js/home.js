@@ -124,11 +124,50 @@ function initNavbarScroll() {
   }, { passive: true });
 }
 
+/** Category filtering */
+function initCategories() {
+  const categoryItems = document.querySelectorAll('.category-bar__item:not(#cat-mas), .category-bar__dropdown-item');
+  const products = document.querySelectorAll('.product-card');
+
+  categoryItems.forEach(item => {
+    if(item.id === 'cat-mas' || item.getAttribute('href') === './vender.html') return; // Skip dropdown toggle and Vender link
+
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      // Update active state for top bar items
+      if (item.classList.contains('category-bar__item')) {
+        document.querySelectorAll('.category-bar__item').forEach(i => i.classList.remove('category-bar__item--active'));
+        item.classList.add('category-bar__item--active');
+      }
+      
+      const filter = item.dataset.filter || item.id.replace('cat-', '');
+      
+      products.forEach(card => {
+        if (filter === 'inicio') {
+          card.style.display = '';
+          return;
+        }
+        
+        const categories = (card.dataset.category || '').split(' ');
+        if (categories.includes(filter)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      
+      showToast(`Filtrado por: ${item.textContent.trim()}`);
+    });
+  });
+}
+
 // Init all
 document.addEventListener('DOMContentLoaded', () => {
   initCartButtons();
   initWishlist();
   initSearch();
+  initCategories();
   initScrollTop();
   initNavbarScroll();
 });

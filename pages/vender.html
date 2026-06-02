@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vender - Baradero Local</title>
+    <link rel="stylesheet" href="../Assets/styles/home.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      .vender-container {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: var(--bl-surface);
+        border: 1px solid var(--bl-border);
+        border-radius: var(--bl-radius-xl);
+        box-shadow: var(--bl-shadow-lg);
+      }
+      .vender-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .vender-header h1 {
+        font-size: 2rem;
+        color: var(--bl-primary-deeper);
+        margin-bottom: 0.5rem;
+      }
+      .vender-header p {
+        color: var(--bl-text-secondary);
+      }
+      
+      /* Form Styles */
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--bl-text);
+      }
+      .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--bl-border);
+        border-radius: var(--bl-radius-md);
+        font-family: inherit;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+      }
+      .form-input:focus {
+        outline: none;
+        border-color: var(--bl-primary);
+        box-shadow: 0 0 0 2px rgba(37,99,235,0.1);
+      }
+      .form-btn {
+        width: 100%;
+        padding: 1rem;
+        background: var(--bl-primary);
+        color: white;
+        border: none;
+        border-radius: var(--bl-radius-md);
+        font-weight: 700;
+        font-size: 1.125rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .form-btn:hover {
+        background: var(--bl-primary-dark);
+      }
+
+      /* Dashboard Styles */
+      #dashboard-view {
+        display: none;
+      }
+      .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      .stat-card {
+        background: var(--bl-surface-alt);
+        padding: 1.5rem;
+        border-radius: var(--bl-radius-lg);
+        text-align: center;
+      }
+      .stat-card h3 {
+        font-size: 2rem;
+        color: var(--bl-primary);
+        margin-bottom: 0.5rem;
+      }
+      .stat-card p {
+        color: var(--bl-text-secondary);
+        font-weight: 600;
+      }
+      
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+      }
+      .btn-outline {
+        padding: 0.75rem 1.5rem;
+        border: 2px solid var(--bl-primary);
+        color: var(--bl-primary);
+        border-radius: var(--bl-radius-md);
+        font-weight: 600;
+        cursor: pointer;
+        background: transparent;
+        transition: all 0.2s;
+      }
+      .btn-outline:hover {
+        background: var(--bl-primary);
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar (Simplified) -->
+    <nav class="navbar">
+      <div class="navbar__top">
+        <a href="./home.html" class="navbar__logo">
+          <span class="navbar__logo-icon">
+            <svg viewBox="0 0 100 100" width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50 0 C 22.4 0 0 22.4 0 50 C 0 75 50 100 50 100 C 50 100 100 75 100 50 C 100 22.4 77.6 0 50 0 Z" fill="#2d4a7c"/>
+              <rect x="23" y="25" width="9" height="30" fill="#ffffff"/>
+              <path d="M 6 65 L 50 33 L 94 65" stroke="#ffffff" stroke-width="11" stroke-linecap="butt" stroke-linejoin="miter"/>
+            </svg>
+          </span>
+          <div class="navbar__logo-text">
+            <span class="navbar__logo-title">Baradero Local</span>
+            <span class="navbar__logo-subtitle">Baradero, más cerca que nunca ashe</span>
+          </div>
+        </a>
+        <div class="navbar__actions">
+          <a href="./home.html" class="navbar__action-circle" aria-label="Volver"><i class="fa-solid fa-arrow-left"></i></a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <div class="vender-container">
+        
+        <!-- Registration View -->
+        <div id="register-view">
+          <div class="vender-header">
+            <h1>Empezá a vender en Baradero</h1>
+            <p>Completá los datos de tu comercio y sumate a la red local.</p>
+          </div>
+          <form id="seller-form">
+            <div class="form-group">
+              <label class="form-label" for="shop-name">Nombre del Comercio</label>
+              <input type="text" id="shop-name" class="form-input" placeholder="Ej: Panadería La Espiga" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="shop-category">Rubro Principal</label>
+              <select id="shop-category" class="form-input" required>
+                <option value="">Seleccioná un rubro...</option>
+                <option value="supermercado">Supermercado</option>
+                <option value="gastronomia">Gastronomía</option>
+                <option value="farmacia">Farmacia</option>
+                <option value="indumentaria">Indumentaria</option>
+                <option value="otros">Otros</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="shop-address">Dirección del Local</label>
+              <input type="text" id="shop-address" class="form-input" placeholder="Calle y número" required />
+            </div>
+            <button type="submit" class="form-btn">Crear mi tienda</button>
+          </form>
+        </div>
+
+        <!-- Dashboard View -->
+        <div id="dashboard-view">
+          <div class="vender-header">
+            <h1>Panel de Vendedor</h1>
+            <p>Bienvenido, <strong id="dash-shop-name">Tu Comercio</strong></p>
+          </div>
+          
+          <div class="dashboard-stats">
+            <div class="stat-card">
+              <h3>0</h3>
+              <p>Ventas Hoy</p>
+            </div>
+            <div class="stat-card">
+              <h3>0</h3>
+              <p>Productos Activos</p>
+            </div>
+            <div class="stat-card">
+              <h3>$0</h3>
+              <p>Ingresos del Mes</p>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="form-btn" style="width: auto; padding: 0.75rem 2rem;"><i class="fa-solid fa-plus"></i> Publicar Producto</button>
+            <button class="btn-outline" id="btn-logout-seller">Cerrar sesión de vendedor</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast" aria-live="polite" role="status"></div>
+
+    <script src="../js/vender.js"></script>
+  </body>
+</html>
