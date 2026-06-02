@@ -1,47 +1,10 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.43.0";
-import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./supabase-config.js";
+import { supabase, showToast, setLoading, isValidEmail, checkUrlErrors, setupGlobalSessionListener } from "./auth-utils.js";
 
 const registerEmailInput = document.getElementById("register-email");
 const registerPasswordInput = document.getElementById("register-password");
 const registerNameInput = document.getElementById("register-name");
 const registerBtn = document.getElementById("register-btn");
 const googleRegisterBtn = document.getElementById("google-register-btn");
-const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-
-// --- UI Helpers ---
-
-function showMessage(text, type = "error") {
-  const msgDiv = document.getElementById("auth-message");
-  if (!msgDiv) return;
-
-  const icon = type === "error"
-    ? '<i class="fa-solid fa-circle-exclamation"></i>'
-    : '<i class="fa-solid fa-circle-check"></i>';
-
-  msgDiv.innerHTML = `${icon} <span>${text}</span>`;
-  msgDiv.className = `auth-message ${type}`;
-}
-
-function hideMessage() {
-  const msgDiv = document.getElementById("auth-message");
-  if (!msgDiv) return;
-  msgDiv.className = "auth-message hidden";
-}
-
-function setLoading(btn, loading, originalText) {
-  if (!btn) return;
-  btn.disabled = loading;
-  if (loading) {
-    btn.dataset.originalText = btn.textContent;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right:8px"></i>Creando cuenta...';
-    btn.style.opacity = "0.7";
-    btn.style.cursor = "not-allowed";
-  } else {
-    btn.textContent = originalText || btn.dataset.originalText || "Enviar";
-    btn.style.opacity = "";
-    btn.style.cursor = "";
-  }
-}
 
 function disableAllInputs() {
   if (registerEmailInput) registerEmailInput.disabled = true;
@@ -60,7 +23,6 @@ function disableAllInputs() {
 }
 
 // --- Mapeo de errores de Supabase a mensajes claros en español ---
-
 function mapRegisterError(error) {
   const msg = (error.message || "").toLowerCase();
   const status = error.status;
@@ -97,54 +59,8 @@ function mapRegisterError(error) {
   return "No se pudo crear la cuenta. Verificá los datos e intentá de nuevo.";
 }
 
-// --- Validaciones ---
-
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-// --- Auto-redirect si ya tiene sesión iniciada ---
-
-async function checkExistingSession() {
-  try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      window.location.href = "../pages/perfil.html";
-    }
-  } catch (_) {
-    // ignorar silenciosamente
-  }
-}
-
-// --- Capturar errores desde la URL (redirecciones OAuth fallidas) ---
-
-function checkUrlErrors() {
-  const params = new URLSearchParams(window.location.search);
-  const hashParams = new URLSearchParams(window.location.hash.substring(1));
-
-  const error = params.get("error") || hashParams.get("error");
-  const errorDesc = params.get("error_description") || hashParams.get("error_description");
-
-  if (error) {
-    console.error("Auth redirect error:", error, errorDesc);
-    let userMsg = "Hubo un problema al registrar con Google. Intentá de nuevo.";
-    if (errorDesc) {
-      const decodedDesc = decodeURIComponent(errorDesc).replace(/\+/g, " ");
-      if (decodedDesc.includes("Database error")) {
-        userMsg = "Error de base de datos al guardar tu perfil. Por favor, intentá de nuevo.";
-      } else {
-        userMsg = `Error de registro: ${decodedDesc}`;
-      }
-    }
-    showMessage(userMsg, "error");
-    history.replaceState(null, null, window.location.pathname);
-  }
-}
-
 // --- Registro con email/contraseña ---
-
 async function registerWithEmail() {
-  hideMessage();
   const email = registerEmailInput?.value?.trim() ?? "";
   const password = registerPasswordInput?.value ?? "";
   const name = registerNameInput?.value?.trim() ?? "";
@@ -152,37 +68,37 @@ async function registerWithEmail() {
 
   // Validaciones locales específicas
   if (!name) {
-    showMessage("Ingresá tu nombre y apellido.", "error");
+    showToast("Ingresá tu nombre y apellido.", "error");
     registerNameInput?.focus();
     return;
   }
   if (name.length < 2) {
-    showMessage("El nombre debe tener al menos 2 caracteres.", "error");
+    showToast("El nombre debe tener al menos 2 caracteres.", "error");
     registerNameInput?.focus();
     return;
   }
   if (!email) {
-    showMessage("Ingresá tu correo electrónico.", "error");
+    showToast("Ingresá tu correo electrónico.", "error");
     registerEmailInput?.focus();
     return;
   }
   if (!isValidEmail(email)) {
-    showMessage("El formato del correo electrónico no es válido.", "error");
+    showToast("El formato del correo electrónico no es válido.", "error");
     registerEmailInput?.focus();
     return;
   }
   if (!password) {
-    showMessage("Ingresá una contraseña.", "error");
+    showToast("Ingresá una contraseña.", "error");
     registerPasswordInput?.focus();
     return;
   }
   if (password.length < 6) {
-    showMessage("La contraseña debe tener al menos 6 caracteres.", "error");
+    showToast("La contraseña debe tener al menos 6 caracteres.", "error");
     registerPasswordInput?.focus();
     return;
   }
 
-  setLoading(registerBtn, true);
+  setLoading(registerBtn, true, "Crear cuenta");
 
   try {
     const { data, error } = await supabase.auth.signUp({
@@ -198,36 +114,34 @@ async function registerWithEmail() {
 
     if (error) {
       console.error("Register error:", error);
-      showMessage(mapRegisterError(error), "error");
+      showToast(mapRegisterError(error), "error");
       setLoading(registerBtn, false, "Crear cuenta");
       return;
     }
 
     if (data?.user && data.user.identities && data.user.identities.length === 0) {
-      showMessage("Ya existe una cuenta con ese correo. Intentá iniciar sesión.", "error");
+      showToast("Ya existe una cuenta con ese correo. Intentá iniciar sesión.", "error");
       setLoading(registerBtn, false, "Crear cuenta");
       return;
     }
 
     // Éxito
     disableAllInputs();
-    showMessage("¡Cuenta creada con éxito! Revisá tu correo para confirmar el registro.", "success");
+    showToast("¡Cuenta creada con éxito! Revisá tu correo para confirmar el registro.", "success");
 
     setTimeout(() => {
       window.location.href = "../pages/login.html";
     }, 3500);
   } catch (err) {
     console.error("Unexpected register error:", err);
-    showMessage("Error inesperado. Intentá de nuevo más tarde.", "error");
+    showToast("Error inesperado. Intentá de nuevo más tarde.", "error");
     setLoading(registerBtn, false, "Crear cuenta");
   }
 }
 
 // --- Registro con Google ---
-
 async function registerWithGoogle() {
-  hideMessage();
-  setLoading(googleRegisterBtn, true);
+  setLoading(googleRegisterBtn, true, "Crear cuenta con Google");
 
   try {
     const redirectTo = `${window.location.origin}/pages/perfil.html`;
@@ -238,18 +152,17 @@ async function registerWithGoogle() {
 
     if (error) {
       console.error("Google register error:", error);
-      showMessage("No se pudo conectar con Google. Intentá de nuevo.", "error");
+      showToast("No se pudo conectar con Google. Intentá de nuevo.", "error");
       setLoading(googleRegisterBtn, false, "Crear cuenta con Google");
     }
   } catch (err) {
     console.error("Unexpected Google register error:", err);
-    showMessage("Error de conexión con Google. Verificá tu internet.", "error");
+    showToast("Error de conexión con Google. Verificá tu internet.", "error");
     setLoading(googleRegisterBtn, false, "Crear cuenta con Google");
   }
 }
 
 // --- Event Listeners ---
-
 const registerForm = document.getElementById("register-form");
 registerForm?.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -277,5 +190,5 @@ toggleRegisterPasswordBtn?.addEventListener("click", () => {
 });
 
 // Inicialización de la página
-checkExistingSession();
+setupGlobalSessionListener(false, true); // No redirigir si no hay sesión, SI redirigir si hay sesión
 checkUrlErrors();
