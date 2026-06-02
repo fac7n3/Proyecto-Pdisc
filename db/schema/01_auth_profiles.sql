@@ -17,7 +17,7 @@ end $$;
 
 create table if not exists public.products (
   id uuid primary key default gen_random_uuid(),
-  seller_id uuid not null references public.profiles(id) on delete cascade,
+  seller_id uuid not null references auth.users(id) on delete cascade,
   title text not null check (char_length(title) >= 3),
   description text,
   price_cents integer not null check (price_cents > 0),
@@ -29,6 +29,16 @@ create table if not exists public.products (
 
 create index if not exists products_seller_id_idx on public.products(seller_id);
 create index if not exists products_is_active_idx on public.products(is_active);
+
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
 
 drop trigger if exists products_set_updated_at on public.products;
 create trigger products_set_updated_at
@@ -83,12 +93,7 @@ begin
       to authenticated
       with check (
         seller_id = auth.uid()
-        and exists (
-          select 1
-          from public.profiles p
-          where p.id = auth.uid()
-            and p.role in ('vendedor', 'admin')
-        )
+        and coalesce((auth.jwt() -> 'app_metadata' ->> 'role'), 'cliente') in ('vendedor', 'admin')
       );
   end if;
 end $$;
@@ -107,21 +112,11 @@ begin
       to authenticated
       using (
         seller_id = auth.uid()
-        and exists (
-          select 1
-          from public.profiles p
-          where p.id = auth.uid()
-            and p.role in ('vendedor', 'admin')
-        )
+        and coalesce((auth.jwt() -> 'app_metadata' ->> 'role'), 'cliente') in ('vendedor', 'admin')
       )
       with check (
         seller_id = auth.uid()
-        and exists (
-          select 1
-          from public.profiles p
-          where p.id = auth.uid()
-            and p.role in ('vendedor', 'admin')
-        )
+        and coalesce((auth.jwt() -> 'app_metadata' ->> 'role'), 'cliente') in ('vendedor', 'admin')
       );
   end if;
 end $$;
@@ -140,12 +135,7 @@ begin
       to authenticated
       using (
         seller_id = auth.uid()
-        and exists (
-          select 1
-          from public.profiles p
-          where p.id = auth.uid()
-            and p.role in ('vendedor', 'admin')
-        )
+        and coalesce((auth.jwt() -> 'app_metadata' ->> 'role'), 'cliente') in ('vendedor', 'admin')
       );
   end if;
 end $$;
@@ -166,18 +156,23 @@ language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  v_role public.app_role;
 begin
+  v_role := (case lower(coalesce(new.raw_user_meta_data ->> 'account_type', 'cliente'))
+      when 'vendedor' then 'vendedor'
+      when 'comercio' then 'vendedor'
+      else 'cliente'
+    end)::public.app_role;
+
+  -- Insert profile
   insert into public.profiles (id, email, full_name, avatar_url, role)
   values (
     new.id,
     new.email,
     coalesce(new.raw_user_meta_data ->> 'full_name', new.raw_user_meta_data ->> 'name'),
     new.raw_user_meta_data ->> 'avatar_url',
-    (case lower(coalesce(new.raw_user_meta_data ->> 'account_type', 'cliente'))
-      when 'vendedor' then 'vendedor'
-      when 'comercio' then 'vendedor'
-      else 'cliente'
-    end)::public.app_role
+    v_role
   )
   on conflict (id) do update
     set email = excluded.email,
@@ -185,6 +180,11 @@ begin
         avatar_url = coalesce(excluded.avatar_url, public.profiles.avatar_url),
         role = coalesce(excluded.role, public.profiles.role),
         updated_at = now();
+
+  -- Inject custom claim into app_metadata for fast JWT reads
+  update auth.users
+  set raw_app_meta_data = coalesce(raw_app_meta_data, '{}'::jsonb) || jsonb_build_object('role', v_role)
+  where id = new.id;
 
   return new;
 end;
@@ -194,16 +194,6 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
 after insert on auth.users
 for each row execute procedure public.handle_new_user();
-
-create or replace function public.set_updated_at()
-returns trigger
-language plpgsql
-as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$;
 
 drop trigger if exists profiles_set_updated_at on public.profiles;
 create trigger profiles_set_updated_at
