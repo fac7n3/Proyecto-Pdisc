@@ -38,6 +38,41 @@ body {
   color: var(--auth-text);
 }
 
+.auth-brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.9;
+  font-size: 2.75rem;
+  font-weight: 900;
+  font-style: italic;
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  letter-spacing: -1px;
+  transform: skewX(-8deg);
+  margin-bottom: 1rem;
+}
+
+.auth-brand-line {
+  color: #4371de;
+  -webkit-text-stroke: 1.5px #19336b;
+  text-shadow: 2px 2px 0 #19336b, 3px 3px 0 #19336b, 4px 4px 0 #19336b;
+}
+
+.auth-brand-line--white {
+  color: #ffffff;
+  -webkit-text-stroke: 1.5px #19336b;
+  text-shadow: 2px 2px 0 #19336b, 3px 3px 0 #19336b, 4px 4px 0 #19336b;
+}
+
+.auth-slogan {
+  font-size: 0.875rem;
+  color: var(--auth-text-light);
+  line-height: 1.5;
+  font-style: italic;
+  max-width: 22rem;
+  margin: 0 auto;
+}
+
 .auth-header h1 {
   font-size: 1.25rem;
   font-weight: 500;
