@@ -76,33 +76,89 @@
     <!-- ====== CONTENIDO PRINCIPAL ====== -->
     <main>
 
-      <!-- Banner Principal -->
-      <section class="hero" aria-label="Banner promocional">
-        <div class="hero__banner">
-          <img src="../Assets/images/banners/hero_banner.png" alt="Productos frescos de Baradero" loading="eager" />
-          <div class="hero__banner-overlay">
-            <h1 class="hero__banner-title">Comprá local,<br />recibí en casa</h1>
-            <p class="hero__banner-subtitle">Productos frescos de los comercios de Baradero directo a tu puerta.</p>
-            <a href="#productos" class="hero__banner-cta">
-              Explorar productos <i class="fa-solid fa-arrow-right"></i>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- Farmacia de turno -->
-      <div class="farmacia-turno">
-        <strong>Farmacia de turno hoy:</strong> nombre de la farmac | direccion ahse 123 | Hasta las 20:00
-      </div>
+      <!-- Sección de Resultados de Búsqueda -->
 
       <!-- Sección de Productos -->
       <section class="products" id="productos" aria-label="Catálogo de productos">
         
-        <div class="section-header">
-          <h2 class="section-header__title">Productos recomendados</h2>
-        </div>
+        <div class="catalog-layout">
+          
+          <button class="mobile-filters-btn" id="mobile-filters-btn">
+            <i class="fa-solid fa-sliders" aria-hidden="true"></i> Filtros
+          </button>
+          
+          <aside class="filters-sidebar" id="filters-sidebar">
+            <div class="filters-sidebar__header">
+              <h3 class="filters-sidebar__title"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Filtros</h3>
+              <button class="filters-sidebar__close" id="filters-sidebar-close" aria-label="Cerrar filtros">&times;</button>
+            </div>
+            
+            <div class="filter-group">
+              <label for="sidebar-search-input" class="filter-group__title">Buscar por nombre</label>
+              <div class="filter-search-wrapper">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="sidebar-search-input" class="filter-input" placeholder="Nombre del comercio…" autocomplete="off" />
+              </div>
+            </div>
 
-        <div class="products__grid" id="products-grid">
+            <div class="filter-group">
+              <label for="filter-zone" class="filter-group__title">Zona</label>
+              <div class="filter-select-wrapper">
+                <select class="filter-select" id="filter-zone">
+                  <option value="todas">Todas las zonas</option>
+                  <option value="centro">Centro</option>
+                  <option value="norte">Zona Norte</option>
+                  <option value="sur">Zona Sur</option>
+                </select>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <h4 class="filter-group__title" id="category-group-label">Categoría</h4>
+              <div class="filter-pills" id="filter-categories" role="group" aria-labelledby="category-group-label">
+                <button class="filter-pill filter-pill--active" data-cat="todas">Todas</button>
+                <button class="filter-pill" data-cat="almacen">Almacén</button>
+                <button class="filter-pill" data-cat="barberia">Barbería</button>
+                <button class="filter-pill" data-cat="carniceria">Carnicería</button>
+                <button class="filter-pill" data-cat="carpinteria">Carpintería</button>
+                <button class="filter-pill" data-cat="supermercados">Supermercados</button>
+                <button class="filter-pill" data-cat="verdulerias">Verdulería</button>
+                <button class="filter-pill" data-cat="veterinaria">Veterinaria</button>
+                <button class="filter-pill" data-cat="optica">Óptica</button>
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <label for="filter-distance" class="filter-group__title">Radio de distancia: <span id="distance-value">10</span> km</label>
+              <input type="range" id="filter-distance" class="filter-range" min="1" max="50" value="10">
+              <p class="filter-note">Activa la ubicación para usar este filtro</p>
+            </div>
+
+            <div class="filter-group">
+              <label for="filter-sort" class="filter-group__title">Ordenar por</label>
+              <div class="filter-select-wrapper">
+                <select class="filter-select" id="filter-sort">
+                  <option value="relevancia">Relevancia</option>
+                  <option value="nombre">Nombre</option>
+                  <option value="distancia">Distancia</option>
+                  <option value="precio-asc">Menor precio</option>
+                  <option value="precio-desc">Mayor precio</option>
+                </select>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </div>
+            </div>
+            
+            <button class="filters-sidebar__apply" id="filters-apply-btn">Aplicar filtros</button>
+          </aside>
+
+          <div class="catalog-content">
+            <div class="section-header">
+              <h2 class="section-header__title" id="catalog-title">Productos recomendados</h2>
+              <span class="catalog-count" id="catalog-count">8 resultados</span>
+            </div>
+
+            <div class="products__grid" id="products-grid">
 
           <!-- Producto 1 -->
           <article class="product-card" id="product-yerba" data-category="supermercados almacen ofertas" data-zone="centro" data-distance="2">
@@ -299,6 +355,8 @@
           </article>
 
         </div>
+          </div> <!-- Fin .catalog-content -->
+        </div> <!-- Fin .catalog-layout -->
       </section>
 
     </main>
@@ -373,6 +431,6 @@
       }
     </style>
 
-    <script type="module" src="../js/home.js"></script>
+    <script type="module" src="../js/search.js"></script>
   </body>
 </html>
