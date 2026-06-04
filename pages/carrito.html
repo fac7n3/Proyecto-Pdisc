@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Tu carrito de compras en Baradero Local — Revisá tus productos antes de confirmar tu pedido." />
+    <title>Mi Carrito - Baradero Local</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="../Assets/styles/home.css" />
+    <link rel="stylesheet" href="../Assets/styles/carrito.css" />
+  </head>
+  <body>
+
+    <!-- ====== BARRA DE NAVEGACIÓN ====== -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+      <div class="navbar__top">
+        <!-- Logo -->
+        <a href="./home.html" class="navbar__logo" id="navbar-logo">
+          <img src="../Assets/images/Logos/logoazulpng.png" alt="Baradero Local" class="navbar__logo-img" />
+          <div class="navbar__logo-text">
+            <span class="navbar__logo-title">Baradero Local</span>
+            <span class="navbar__logo-subtitle">Baradero, más cerca que nunca</span>
+          </div>
+        </a>
+
+        <!-- Acciones -->
+        <div class="navbar__actions">
+          <a href="./perfil.html" class="navbar__action-circle" id="nav-profile" aria-label="Mi cuenta">u</a>
+          <a href="./carrito.html" class="navbar__action-circle" id="nav-cart" aria-label="Carrito de compras">
+            <i class="fa-solid fa-cart-shopping" style="font-size: 0.875rem;"></i>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ====== CONTENIDO DEL CARRITO ====== -->
+    <main class="cart-page">
+      <h1 class="cart-page__title">Mi carrito</h1>
+
+      <div class="cart-layout">
+
+        <!-- Tabla de productos -->
+        <div class="cart-table-wrapper">
+
+          <!-- Estado vacío -->
+          <div id="cart-empty" class="cart-empty" style="display: none;">
+            <div class="cart-empty__icon">
+              <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <h2 class="cart-empty__title">Tu carrito está vacío</h2>
+            <p class="cart-empty__text">Explorá los productos de Baradero y agregá lo que necesites.</p>
+            <a href="./home.html" class="cart-empty__link">
+              <i class="fa-solid fa-arrow-left"></i> Ir a comprar
+            </a>
+          </div>
+
+          <!-- Tabla con productos -->
+          <div id="cart-filled">
+            <div class="cart-table__header">
+              <span>Producto</span>
+              <span>Precio</span>
+              <span>Items</span>
+              <span>Subtotal</span>
+              <span></span>
+            </div>
+
+            <!-- Filas dinámicas -->
+            <div id="cart-items"></div>
+
+            <!-- Barra de acciones -->
+            <div class="cart-actions">
+              <a href="./home.html" class="cart-actions__back">
+                <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+              </a>
+              <div class="cart-actions__buttons">
+                <button id="cart-clear-btn" class="cart-actions__btn cart-actions__btn--outline">Vaciar mi carrito</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sidebar — Resumen del pedido -->
+        <aside class="cart-summary">
+          <h2 class="cart-summary__title">Resumen del pedido</h2>
+
+          <!-- Secciones desplegables -->
+          <div class="cart-summary__section" id="coupon-section">
+            <div class="cart-summary__section-header" id="coupon-header">
+              <span>¿Tenés un cupón de descuento?</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="cart-summary__section-content" id="coupon-content" style="display: none;">
+              <div class="coupon-input-group">
+                <input type="text" id="coupon-input" placeholder="Ingresá tu código" class="coupon-input" autocomplete="off" />
+                <button id="coupon-apply-btn" class="coupon-btn">Aplicar</button>
+              </div>
+              <p id="coupon-message" class="coupon-message"></p>
+            </div>
+          </div>
+
+          <div class="cart-summary__section">
+            <div class="cart-summary__section-header">
+              <span>Calcular costos de envío</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </div>
+
+          <!-- Totales -->
+          <div class="cart-summary__totals">
+            <div class="cart-summary__row">
+              <span class="cart-summary__row-label" id="cart-count">0 productos</span>
+            </div>
+
+            <div class="cart-summary__row">
+              <span class="cart-summary__row-label">Subtotal</span>
+              <span class="cart-summary__row-value" id="summary-subtotal">$0</span>
+            </div>
+
+            <div class="cart-summary__row cart-summary__row--discount" id="summary-discount-row" style="display: none;">
+              <span class="cart-summary__row-label">Descuento (<span id="discount-percent">0%</span>)</span>
+              <span class="cart-summary__row-value" id="summary-discount">-$0</span>
+            </div>
+
+            <div class="cart-summary__row cart-summary__row--shipping">
+              <span class="cart-summary__row-label">Envío (Envío a Domicilio)</span>
+              <span class="cart-summary__row-value" id="summary-shipping">$0</span>
+            </div>
+
+            <div class="cart-summary__divider"></div>
+
+            <div class="cart-summary__row cart-summary__row--total">
+              <span class="cart-summary__row-label">Total</span>
+              <span class="cart-summary__row-value" id="summary-total">$0</span>
+            </div>
+          </div>
+
+          <!-- Botón de pago -->
+          <button id="cart-checkout-btn" class="cart-summary__checkout">
+            Iniciar pago <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </aside>
+
+      </div>
+    </main>
+
+    <!-- Notificación Toast -->
+    <div class="toast" id="toast" aria-live="polite" role="status"></div>
+
+    <script src="../js/carrito.js"></script>
+  </body>
+</html>
