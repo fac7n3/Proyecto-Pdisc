@@ -30,9 +30,9 @@ export function showToast(message, type = "error") {
   
   const bgColor = type === "error" ? "#fee2e2" : "#dcfce7";
   const textColor = type === "error" ? "#991b1b" : "#166534";
-  const icon = type === "error"
-    ? '<i class="fa-solid fa-circle-exclamation"></i>'
-    : '<i class="fa-solid fa-circle-check"></i>';
+  const iconClass = type === "error"
+    ? "fa-solid fa-circle-exclamation"
+    : "fa-solid fa-circle-check";
 
   toast.style.cssText = `
     background-color: ${bgColor};
@@ -50,7 +50,12 @@ export function showToast(message, type = "error") {
     transition: all 0.3s ease;
   `;
   
-  toast.innerHTML = `${icon} <span>${message}</span>`;
+  const iconEl = document.createElement("i");
+  iconEl.className = iconClass;
+  const span = document.createElement("span");
+  span.textContent = message;
+  toast.appendChild(iconEl);
+  toast.appendChild(span);
   container.appendChild(toast);
 
   // Animar entrada
@@ -75,7 +80,12 @@ export function setLoading(btn, loading, originalText = "Enviar") {
   btn.disabled = loading;
   if (loading) {
     btn.dataset.originalText = btn.textContent;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right:8px"></i>Cargando...';
+    btn.textContent = '';
+    const spinner = document.createElement('i');
+    spinner.className = 'fa-solid fa-spinner fa-spin';
+    spinner.style.marginRight = '8px';
+    btn.appendChild(spinner);
+    btn.append('Cargando...');
     btn.style.opacity = "0.7";
     btn.style.cursor = "not-allowed";
   } else {
@@ -138,7 +148,7 @@ export function setupGlobalSessionListener(redirectIfNoSession = false, redirect
     } else if (user && redirectIfSession) {
       window.location.replace("../pages/perfil.html");
     }
-  }).catch(() => {
-    // Ignorar error
+  }).catch((err) => {
+    console.warn("Session check failed:", err?.message || err);
   });
 }

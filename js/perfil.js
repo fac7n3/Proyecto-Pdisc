@@ -1,4 +1,4 @@
-import { supabase, setupGlobalSessionListener } from "./auth-utils.js";
+import { supabase, setupGlobalSessionListener, showToast } from "./auth-utils.js";
 
 const sessionStatus = document.getElementById("session-status");
 const userEmail = document.getElementById("user-email");
@@ -21,6 +21,7 @@ async function renderSession() {
     const profileResponse = await supabase
       .from("profiles")
       .select("id, email, full_name, role")
+      .eq('id', user.id)
       .single();
 
     if (profileResponse.error) {
@@ -51,8 +52,13 @@ async function renderSession() {
 }
 
 async function logout() {
-  await supabase.auth.signOut();
-  // El redireccionamiento ocurrirá automáticamente gracias al setupGlobalSessionListener
+  showToast("Cerrando sesión...", "success");
+  
+  // Breve delay para que el usuario pueda ver el toast
+  setTimeout(async () => {
+    await supabase.auth.signOut();
+    // El redireccionamiento ocurrirá automáticamente
+  }, 800);
 }
 
 logoutBtn?.addEventListener("click", logout);

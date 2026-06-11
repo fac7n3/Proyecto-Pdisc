@@ -129,6 +129,33 @@ togglePasswordBtn?.addEventListener("click", () => {
   }
 });
 
+// --- Olvidaste tu contraseña ---
+const forgotPasswordLink = document.getElementById("forgot-password-link");
+forgotPasswordLink?.addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = emailInput?.value?.trim() ?? "";
+  if (!email || !isValidEmail(email)) {
+    showToast("Por favor, ingresá un correo válido en el campo superior para recuperar tu contraseña.", "error");
+    emailInput?.focus();
+    return;
+  }
+
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/pages/login.html`, // O una página de reseteo si la hay
+    });
+    if (error) {
+      console.error("Reset password error:", error);
+      showToast("Hubo un error al intentar enviar el correo. Intentá nuevamente.", "error");
+    } else {
+      showToast("¡Te enviamos un correo con las instrucciones para recuperar tu contraseña!", "success");
+    }
+  } catch (err) {
+    console.error("Unexpected reset error:", err);
+    showToast("Error inesperado. Intentá de nuevo más tarde.", "error");
+  }
+});
+
 // Inicialización de la página
 setupGlobalSessionListener(false, true); // No redirigir si no hay sesión, SI redirigir si hay sesión
 checkUrlErrors();

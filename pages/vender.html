@@ -3,9 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co https://accounts.google.com;">
     <title>Vender - Baradero Local</title>
     <link rel="stylesheet" href="../Assets/styles/home.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <style>
       .vender-container {
         max-width: 800px;
@@ -130,7 +137,7 @@
           </span>
           <div class="navbar__logo-text">
             <span class="navbar__logo-title">Baradero Local</span>
-            <span class="navbar__logo-subtitle">Baradero, más cerca que nunca ashe</span>
+            <span class="navbar__logo-subtitle">Baradero, más cerca que nunca</span>
           </div>
         </a>
         <div class="navbar__actions">
@@ -159,7 +166,6 @@
                 <option value="">Seleccioná un rubro...</option>
                 <option value="supermercado">Supermercado</option>
                 <option value="gastronomia">Gastronomía</option>
-                <option value="farmacia">Farmacia</option>
                 <option value="indumentaria">Indumentaria</option>
                 <option value="otros">Otros</option>
               </select>
@@ -206,6 +212,6 @@
     <!-- Notificación Toast -->
     <div class="toast" id="toast" aria-live="polite" role="status"></div>
 
-    <script src="../js/vender.js"></script>
+    <script type="module" src="../js/vender.js"></script>
   </body>
 </html>

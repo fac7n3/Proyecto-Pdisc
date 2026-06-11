@@ -92,8 +92,9 @@ async function registerWithEmail() {
     registerPasswordInput?.focus();
     return;
   }
-  if (password.length < 6) {
-    showToast("La contraseña debe tener al menos 6 caracteres.", "error");
+  // Validación básica
+  if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+    showToast("La contraseña debe tener al menos 8 caracteres, una mayúscula y un número", "error");
     registerPasswordInput?.focus();
     return;
   }
@@ -107,7 +108,6 @@ async function registerWithEmail() {
       options: {
         data: {
           full_name: name,
-          account_type: accountType,
         }
       }
     });

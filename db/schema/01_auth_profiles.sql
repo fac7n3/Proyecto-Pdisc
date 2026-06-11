@@ -159,11 +159,8 @@ as $$
 declare
   v_role public.app_role;
 begin
-  v_role := (case lower(coalesce(new.raw_user_meta_data ->> 'account_type', 'cliente'))
-      when 'vendedor' then 'vendedor'
-      when 'comercio' then 'vendedor'
-      else 'cliente'
-    end)::public.app_role;
+  -- Todos los usuarios nuevos empiezan como 'cliente'. Para ser vendedor, deben mandar una solicitud.
+  v_role := 'cliente'::public.app_role;
 
   -- Insert profile
   insert into public.profiles (id, email, full_name, avatar_url, role)
@@ -178,7 +175,7 @@ begin
     set email = excluded.email,
         full_name = coalesce(excluded.full_name, public.profiles.full_name),
         avatar_url = coalesce(excluded.avatar_url, public.profiles.avatar_url),
-        role = coalesce(excluded.role, public.profiles.role),
+        -- No actualizar el role aquí, ya que podría sobreescribir si el usuario inicia sesión con otro proveedor
         updated_at = now();
 
   -- Inject custom claim into app_metadata for fast JWT reads
@@ -258,6 +255,7 @@ language plpgsql
 security definer
 as $$
 begin
+  -- Solo se puede cambiar el rol a través de la service_role key o si el usuario es superadmin
   if old.role <> new.role and auth.role() = 'authenticated' then
     raise exception 'No esta permitido modificar el rol del usuario directamente.';
   end if;

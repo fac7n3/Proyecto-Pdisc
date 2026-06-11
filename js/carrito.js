@@ -25,6 +25,7 @@ function getCart() {
     const raw = localStorage.getItem(CART_KEY);
     return raw ? JSON.parse(raw) : [];
   } catch {
+    localStorage.removeItem(CART_KEY);
     return [];
   }
 }
@@ -89,32 +90,95 @@ function renderCart() {
     row.className = 'cart-item';
     row.dataset.index = index;
 
-    row.innerHTML = `
-      <div class="cart-item__product">
-        <img src="${item.image}" alt="${item.name}" class="cart-item__img" />
-        <div class="cart-item__info">
-          <span class="cart-item__name">${item.name}</span>
-          <span class="cart-item__shop"><i class="fa-solid fa-store"></i> ${item.shop}</span>
-          <a href="./home.html" class="cart-item__detail-link">Ver detalle</a>
-        </div>
-      </div>
-      <span class="cart-item__price">${formatPrice(item.price)}</span>
-      <div class="cart-qty">
-        <button class="cart-qty__btn cart-qty__minus" data-index="${index}" aria-label="Disminuir cantidad" ${item.qty <= 1 ? 'disabled' : ''}>
-          <i class="fa-solid fa-minus"></i>
-        </button>
-        <span class="cart-qty__value">${item.qty}</span>
-        <button class="cart-qty__btn cart-qty__plus" data-index="${index}" aria-label="Aumentar cantidad">
-          <i class="fa-solid fa-plus"></i>
-        </button>
-      </div>
-      <span class="cart-item__subtotal">${formatPrice(itemSubtotal)}</span>
-      <div class="cart-item__actions">
-        <button class="cart-item__delete" data-index="${index}" aria-label="Eliminar producto">
-          <i class="fa-solid fa-trash-can"></i>
-        </button>
-      </div>
-    `;
+    // --- Producto (imagen + info) ---
+    const productDiv = document.createElement('div');
+    productDiv.className = 'cart-item__product';
+
+    const img = document.createElement('img');
+    img.src = item.image || '';
+    img.alt = item.name || 'Producto';
+    img.className = 'cart-item__img';
+    productDiv.appendChild(img);
+
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'cart-item__info';
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'cart-item__name';
+    nameSpan.textContent = item.name;
+    infoDiv.appendChild(nameSpan);
+
+    const shopSpan = document.createElement('span');
+    shopSpan.className = 'cart-item__shop';
+    const shopIcon = document.createElement('i');
+    shopIcon.className = 'fa-solid fa-store';
+    shopSpan.appendChild(shopIcon);
+    shopSpan.append(` ${item.shop}`);
+    infoDiv.appendChild(shopSpan);
+
+    const detailLink = document.createElement('a');
+    detailLink.href = './home.html';
+    detailLink.className = 'cart-item__detail-link';
+    detailLink.textContent = 'Ver detalle';
+    infoDiv.appendChild(detailLink);
+
+    productDiv.appendChild(infoDiv);
+    row.appendChild(productDiv);
+
+    // --- Precio ---
+    const priceSpan = document.createElement('span');
+    priceSpan.className = 'cart-item__price';
+    priceSpan.textContent = formatPrice(item.price);
+    row.appendChild(priceSpan);
+
+    // --- Cantidad ---
+    const qtyDiv = document.createElement('div');
+    qtyDiv.className = 'cart-qty';
+
+    const minusBtn = document.createElement('button');
+    minusBtn.className = 'cart-qty__btn cart-qty__minus';
+    minusBtn.dataset.index = index;
+    minusBtn.setAttribute('aria-label', 'Disminuir cantidad');
+    if (item.qty <= 1) minusBtn.disabled = true;
+    const minusIcon = document.createElement('i');
+    minusIcon.className = 'fa-solid fa-minus';
+    minusBtn.appendChild(minusIcon);
+    qtyDiv.appendChild(minusBtn);
+
+    const qtyValue = document.createElement('span');
+    qtyValue.className = 'cart-qty__value';
+    qtyValue.textContent = item.qty;
+    qtyDiv.appendChild(qtyValue);
+
+    const plusBtn = document.createElement('button');
+    plusBtn.className = 'cart-qty__btn cart-qty__plus';
+    plusBtn.dataset.index = index;
+    plusBtn.setAttribute('aria-label', 'Aumentar cantidad');
+    const plusIcon = document.createElement('i');
+    plusIcon.className = 'fa-solid fa-plus';
+    plusBtn.appendChild(plusIcon);
+    qtyDiv.appendChild(plusBtn);
+
+    row.appendChild(qtyDiv);
+
+    // --- Subtotal ---
+    const subtotalSpan = document.createElement('span');
+    subtotalSpan.className = 'cart-item__subtotal';
+    subtotalSpan.textContent = formatPrice(itemSubtotal);
+    row.appendChild(subtotalSpan);
+
+    // --- Acciones (eliminar) ---
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'cart-item__actions';
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'cart-item__delete';
+    deleteBtn.dataset.index = index;
+    deleteBtn.setAttribute('aria-label', 'Eliminar producto');
+    const trashIcon = document.createElement('i');
+    trashIcon.className = 'fa-solid fa-trash-can';
+    deleteBtn.appendChild(trashIcon);
+    actionsDiv.appendChild(deleteBtn);
+    row.appendChild(actionsDiv);
 
     tableBody.appendChild(row);
   });

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co https://accounts.google.com;">
+    <title>Mi Perfil - Baradero Local</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script type="module" crossorigin src="/assets/perfil-DmBGXQ4r.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-Dezn_h7o.js">
+    <link rel="modulepreload" crossorigin href="/assets/auth-utils-CStluJ1I.js">
+    <link rel="stylesheet" crossorigin href="/assets/auth-BqXQO2G4.css">
+  </head>
+  <body>
+    <main class="auth-layout">
+      <div class="auth-header">
+        <h1>Mi Perfil</h1>
+        <p id="session-status">Cargando sesión...</p>
+      </div>
+
+      <div class="auth-card">
+        <div class="profile-avatar-section">
+          <div class="profile-avatar">
+            <i class="fa-regular fa-user"></i>
+          </div>
+          <div id="user-role-badge" class="profile-badge">Cargando...</div>
+        </div>
+
+        <div class="profile-details">
+          <div class="profile-detail-item">
+            <span class="profile-detail-label">
+              <i class="fa-regular fa-envelope"></i> Correo electrónico
+            </span>
+            <span id="user-email" class="profile-detail-value">-</span>
+          </div>
+
+          <div class="profile-detail-item">
+            <span class="profile-detail-label">
+              <i class="fa-regular fa-id-card"></i> Nombre y apellido
+            </span>
+            <span id="user-name" class="profile-detail-value">-</span>
+          </div>
+
+          <div class="profile-detail-item">
+            <span class="profile-detail-label">
+              <i class="fa-solid fa-user-gear"></i> Rol de usuario
+            </span>
+            <span id="user-role" class="profile-detail-value">-</span>
+          </div>
+        </div>
+
+        <button id="logout-btn" class="auth-btn auth-btn-primary" type="button">
+          <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i> Cerrar sesión
+        </button>
+
+        <a href="./login.html" class="auth-btn auth-btn-ghost">
+          <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i> Volver al inicio de sesión
+        </a>
+      </div>
+    </main>
+
+  </body>
+</html>
