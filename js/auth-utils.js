@@ -137,7 +137,7 @@ export function setupGlobalSessionListener(redirectIfNoSession = false, redirect
       window.location.replace("../pages/login.html");
     } else if (event === "SIGNED_IN" && redirectIfSession) {
       isHandlingRedirect = true;
-      window.location.replace("../pages/perfil.html");
+      window.location.replace("../pages/home.html");
     }
   });
 
@@ -146,7 +146,7 @@ export function setupGlobalSessionListener(redirectIfNoSession = false, redirect
     if (!user && redirectIfNoSession) {
       window.location.replace("../pages/login.html");
     } else if (user && redirectIfSession) {
-      window.location.replace("../pages/perfil.html");
+      window.location.replace("../pages/home.html");
     }
   }).catch((err) => {
     console.warn("Session check failed:", err?.message || err);

@@ -84,7 +84,7 @@ async function loginWithGoogle() {
   setLoading(googleLoginBtn, true, "Iniciar sesión con Google");
 
   try {
-    const redirectTo = `${window.location.origin}/pages/perfil.html`;
+    const redirectTo = `${window.location.origin}/pages/home.html`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo },

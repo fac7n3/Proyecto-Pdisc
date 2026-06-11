@@ -324,4 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollTop();
   initNavbarScroll();
   updateCartBadge();
+
+  // Modal de detalle de producto
+  if (typeof initProductModal === 'function') initProductModal();
 });
