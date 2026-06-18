@@ -1,4 +1,4 @@
-import { supabase, showToast, setLoading, isValidEmail, checkUrlErrors, setupGlobalSessionListener } from "./auth-utils.js";
+import { supabase, showToast, setLoading, isValidEmail, checkUrlErrors, guardPage } from "./auth-utils.js";
 
 const registerEmailInput = document.getElementById("register-email");
 const registerPasswordInput = document.getElementById("register-password");
@@ -144,7 +144,7 @@ async function registerWithGoogle() {
   setLoading(googleRegisterBtn, true, "Crear cuenta con Google");
 
   try {
-    const redirectTo = `${window.location.origin}/pages/perfil.html`;
+    const redirectTo = `${window.location.origin}/pages/home.html`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo },
@@ -162,33 +162,43 @@ async function registerWithGoogle() {
   }
 }
 
-// --- Manejadores de Eventos ---
-const registerForm = document.getElementById("register-form");
-registerForm?.addEventListener("submit", (e) => {
-  e.preventDefault();
-  registerWithEmail();
-});
+// --- Manejadores de Eventos (se inicializan dentro del guard) ---
+function initRegisterForm() {
+  const registerForm = document.getElementById("register-form");
+  registerForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    registerWithEmail();
+  });
 
-googleRegisterBtn?.addEventListener("click", registerWithGoogle);
+  googleRegisterBtn?.addEventListener("click", registerWithGoogle);
 
-// Alternar visibilidad de contraseña
-const toggleRegisterPasswordBtn = document.getElementById("toggle-register-password");
-toggleRegisterPasswordBtn?.addEventListener("click", () => {
-  const type = registerPasswordInput.getAttribute("type") === "password" ? "text" : "password";
-  registerPasswordInput.setAttribute("type", type);
-  
-  const icon = toggleRegisterPasswordBtn.querySelector("i");
-  if (icon) {
-    if (type === "text") {
-      icon.className = "fa-regular fa-eye-slash";
-      toggleRegisterPasswordBtn.setAttribute("aria-label", "Ocultar contraseña");
-    } else {
-      icon.className = "fa-regular fa-eye";
-      toggleRegisterPasswordBtn.setAttribute("aria-label", "Mostrar contraseña");
+  // Alternar visibilidad de contraseña
+  const toggleRegisterPasswordBtn = document.getElementById("toggle-register-password");
+  toggleRegisterPasswordBtn?.addEventListener("click", () => {
+    const type = registerPasswordInput.getAttribute("type") === "password" ? "text" : "password";
+    registerPasswordInput.setAttribute("type", type);
+    
+    const icon = toggleRegisterPasswordBtn.querySelector("i");
+    if (icon) {
+      if (type === "text") {
+        icon.className = "fa-regular fa-eye-slash";
+        toggleRegisterPasswordBtn.setAttribute("aria-label", "Ocultar contraseña");
+      } else {
+        icon.className = "fa-regular fa-eye";
+        toggleRegisterPasswordBtn.setAttribute("aria-label", "Mostrar contraseña");
+      }
     }
-  }
-});
+  });
 
-// Inicialización de la página
-setupGlobalSessionListener(false, true); // No redirigir si no hay sesión, SI redirigir si hay sesión
-checkUrlErrors();
+  // Verificar errores OAuth en la URL
+  checkUrlErrors();
+}
+
+// --- Inicialización con Guard ---
+// Página INVERSA: si hay sesión → redirigir a Home. Si no hay → mostrar formulario.
+guardPage({
+  redirectIfAuth: true,
+  onReady: () => {
+    initRegisterForm();
+  },
+});

@@ -1,58 +1,9 @@
 // Interacciones de la página principal
-// Sin dependencia de Supabase para demo estática — los productos están en el HTML.
+import { supabase } from './auth-utils.js';
+import { getCart, saveCart, parsePrice, updateCartBadge, showToast } from './cart-utils.js';
+// Importamos supabase para que el SDK procese los tokens OAuth
+// que llegan en la URL cuando Google redirige de vuelta a esta página.
 
-const CART_KEY = 'bl_cart';
-
-// --- Utilidades del carrito (localStorage) ---
-
-/** Obtener el carrito actual */
-function getCart() {
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    localStorage.removeItem(CART_KEY);
-    return [];
-  }
-}
-
-/** Guardar el carrito */
-function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-}
-
-/** Extraer precio numérico de un string como "$2.850" */
-function parsePrice(text) {
-  if (!text) return 0;
-  // Eliminar símbolo de pesos y puntos separadores de miles
-  return parseInt(text.replace(/[^0-9]/g, ''), 10) || 0;
-}
-
-/** Actualizar el badge del carrito en el navbar */
-function updateCartBadge() {
-  const cart = getCart();
-  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-  const badge = document.getElementById('cart-badge');
-  if (badge) {
-    badge.textContent = totalItems > 0 ? totalItems : '';
-    badge.dataset.count = totalItems;
-  }
-}
-
-/** Notificación toast */
-function showToast(message, type = 'default') {
-  const toast = document.getElementById('toast');
-  if (!toast) return;
-  toast.textContent = message;
-  toast.className = 'toast';
-  if (type === 'success') toast.classList.add('toast--success');
-  toast.classList.add('toast--visible');
-
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => {
-    toast.classList.remove('toast--visible');
-  }, 2500);
-}
 
 /** Botones de agregar al carrito */
 function initCartButtons() {

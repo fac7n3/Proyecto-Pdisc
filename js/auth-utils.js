@@ -152,3 +152,158 @@ export function setupGlobalSessionListener(redirectIfNoSession = false, redirect
     console.warn("Session check failed:", err?.message || err);
   });
 }
+
+// --- Guard de Página Mejorado ---
+/**
+ * Protege una página entera. Muestra un loading screen mientras
+ * verifica la sesión, y redirige si no está autorizado.
+ * Previene el "flash of unauthorized content".
+ *
+ * @param {Object} options
+ * @param {boolean} options.requireAuth - true para páginas privadas (perfil, vender)
+ * @param {boolean} options.redirectIfAuth - true para páginas inversas (login, register)
+ * @param {string}  options.redirectTo - URL de redirección personalizada
+ * @param {Function} options.onReady - Callback cuando la auth está confirmada. Recibe (user|null).
+ * @returns {Promise<import("@supabase/supabase-js").User|null>}
+ */
+export async function guardPage({
+  requireAuth = false,
+  redirectIfAuth = false,
+  redirectTo = null,
+  onReady = null,
+} = {}) {
+  // 1. Ocultar contenido inmediatamente y mostrar loading
+  const mainContent = document.getElementById('main-content');
+  const loadingScreen = document.getElementById('loading-screen');
+
+  if (mainContent) mainContent.style.visibility = 'hidden';
+  if (loadingScreen) loadingScreen.style.display = 'flex';
+
+  try {
+    // 2. Verificar sesión con el servidor (no confiar solo en localStorage)
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error && error.message !== 'Auth session missing!') {
+      console.warn('Auth check error:', error.message);
+    }
+
+    // 3. Lógica de redirección
+    if (!user && requireAuth) {
+      // No autenticado en página privada → a login
+      window.location.replace(redirectTo || '../pages/login.html');
+      return null;
+    }
+
+    if (user && redirectIfAuth) {
+      // Autenticado en página de login/register → a home
+      window.location.replace(redirectTo || '../pages/home.html');
+      return null;
+    }
+
+    // 4. Auth confirmada → mostrar contenido
+    if (mainContent) {
+      mainContent.style.visibility = 'visible';
+      mainContent.style.opacity = '0';
+      // Transición suave de aparición
+      requestAnimationFrame(() => {
+        mainContent.style.transition = 'opacity 0.3s ease';
+        mainContent.style.opacity = '1';
+      });
+    }
+    if (loadingScreen) {
+      loadingScreen.style.opacity = '0';
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+      }, 300);
+    }
+
+    // 5. Configurar listener para cambios de sesión en tiempo real
+    supabase.auth.onAuthStateChange((event) => {
+      if (isHandlingRedirect) return;
+
+      if (event === "SIGNED_OUT" && requireAuth) {
+        isHandlingRedirect = true;
+        window.location.replace(redirectTo || '../pages/login.html');
+      } else if (event === "SIGNED_IN" && redirectIfAuth) {
+        isHandlingRedirect = true;
+        window.location.replace(redirectTo || '../pages/home.html');
+      }
+    });
+
+    // 6. Ejecutar callback con datos del usuario
+    if (onReady) onReady(user);
+
+    return user;
+  } catch (err) {
+    console.error('Guard error:', err);
+    if (requireAuth) {
+      window.location.replace(redirectTo || '../pages/login.html');
+    } else {
+      // Para páginas públicas, mostrar contenido aunque falle la verificación
+      if (mainContent) {
+        mainContent.style.visibility = 'visible';
+        mainContent.style.opacity = '1';
+      }
+      if (loadingScreen) loadingScreen.style.display = 'none';
+      if (onReady) onReady(null);
+    }
+    return null;
+  }
+}
+
+// --- Actualizar Foto de Perfil en Navbar ---
+export async function updateNavbarProfile() {
+  const navProfile = document.getElementById("nav-profile");
+  if (!navProfile) return;
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      // Intenta obtener el avatar del metadata de auth o del perfil de la base de datos
+      let avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+
+      // Buscamos si hay un avatar guardado en la base de datos
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (profile && profile.avatar_url) {
+        avatarUrl = profile.avatar_url;
+      }
+
+      if (avatarUrl) {
+        navProfile.innerHTML = "";
+        const img = document.createElement("img");
+        img.src = avatarUrl;
+        img.alt = "Mi perfil";
+        img.style.cssText = "width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;";
+        img.onerror = () => {
+          navProfile.innerHTML = '<i class="fa-regular fa-user" style="font-size: 0.875rem;"></i>';
+        };
+        navProfile.appendChild(img);
+      }
+    } else {
+      // Si no está autenticado, volvemos al icono por defecto
+      navProfile.innerHTML = '<i class="fa-regular fa-user" style="font-size: 0.875rem;"></i>';
+    }
+  } catch (err) {
+    console.error("Error al actualizar la foto de perfil en el navbar:", err);
+  }
+}
+
+// Ejecutar automáticamente al cargar el script en cualquier página
+if (typeof window !== "undefined") {
+  // Escuchar cuando el DOM esté listo
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", updateNavbarProfile);
+  } else {
+    updateNavbarProfile();
+  }
+
+  // Suscribirse a cambios de estado de autenticación
+  supabase.auth.onAuthStateChange(() => {
+    updateNavbarProfile();
+  });
+}

@@ -1,7 +1,8 @@
 // Lógica del carrito de compras — Baradero Local
 // Usa localStorage para persistir los productos entre páginas.
+import { supabase } from './auth-utils.js';
 
-const CART_KEY = 'bl_cart';
+import { getCart, saveCart, updateCartBadge } from './cart-utils.js';
 
 // --- Producto de prueba (pre-cargado si el carrito está vacío) ---
 const PRODUCTO_PRUEBA = {
@@ -17,25 +18,6 @@ const PRODUCTO_PRUEBA = {
 // --- Estado del Carrito ---
 let currentDiscount = 0; // Porcentaje de descuento (0 a 1)
 
-// --- Utilidades de localStorage ---
-
-/** Obtener el carrito actual */
-function getCart() {
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    localStorage.removeItem(CART_KEY);
-    return [];
-  }
-}
-
-/** Guardar el carrito */
-function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-}
-
-// --- Renderizado ---
 
 /** Formatear precio en pesos argentinos */
 function formatPrice(value) {

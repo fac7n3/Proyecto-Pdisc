@@ -6,61 +6,32 @@
  * construye el modal dinámicamente, y maneja todas las interacciones.
  */
 
-const CART_KEY = 'bl_cart';
+import { getCart as _getCart, saveCart as _saveCart, parsePrice as _parsePrice, updateCartBadge as _updateBadge, showToast as _showToast } from './cart-utils.js';
 
-// ── Utilidades de carrito (reutilizadas) ──────────────────────
-function _getCart() {
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    localStorage.removeItem(CART_KEY);
-    return [];
-  }
+// ── Seguridad ───────────────────────────────────────────────
+function escapeHTML(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
-function _saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-}
-
-function _parsePrice(text) {
-  if (!text) return 0;
-  return parseInt(text.replace(/[^0-9]/g, ''), 10) || 0;
-}
-
-function _updateBadge() {
-  const cart = _getCart();
-  const total = cart.reduce((s, i) => s + i.qty, 0);
-  const badge = document.getElementById('cart-badge');
-  if (badge) {
-    badge.textContent = total > 0 ? total : '';
-    badge.dataset.count = total;
-  }
-}
-
-function _showToast(msg, type = 'default') {
-  const toast = document.getElementById('toast');
-  if (!toast) return;
-  toast.textContent = msg;
-  toast.className = 'toast';
-  if (type === 'success') toast.classList.add('toast--success');
-  toast.classList.add('toast--visible');
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove('toast--visible'), 2500);
-}
 
 // ── Datos del producto ──────────────────────────────────────
 function extractProductData(card) {
   const id = card.id || `product-${Date.now()}`;
-  const name = card.querySelector('.product-card__name')?.textContent?.trim() || 'Producto';
+  const name = escapeHTML(card.querySelector('.product-card__name')?.textContent?.trim() || 'Producto');
   const shopEl = card.querySelector('.product-card__shop');
-  const shop = shopEl?.textContent?.trim()?.replace(/^\s*/, '') || 'Tienda';
-  const priceText = card.querySelector('.product-card__price')?.textContent || '$0';
-  const priceOldText = card.querySelector('.product-card__price-old')?.textContent || '';
-  const discountText = card.querySelector('.product-card__discount')?.textContent || '';
-  const imgSrc = card.querySelector('.product-card__image img')?.getAttribute('src') || '';
-  const imgAlt = card.querySelector('.product-card__image img')?.getAttribute('alt') || name;
-  const shippingText = card.querySelector('.product-card__shipping')?.textContent?.trim() || '';
+  const shop = escapeHTML(shopEl?.textContent?.trim()?.replace(/^\s*/, '') || 'Tienda');
+  const priceText = escapeHTML(card.querySelector('.product-card__price')?.textContent || '$0');
+  const priceOldText = escapeHTML(card.querySelector('.product-card__price-old')?.textContent || '');
+  const discountText = escapeHTML(card.querySelector('.product-card__discount')?.textContent || '');
+  const imgSrc = encodeURI(card.querySelector('.product-card__image img')?.getAttribute('src') || '');
+  const imgAlt = escapeHTML(card.querySelector('.product-card__image img')?.getAttribute('alt') || name);
+  const shippingText = escapeHTML(card.querySelector('.product-card__shipping')?.textContent?.trim() || '');
 
   // Rating
   const starsContainer = card.querySelector('.product-card__stars');

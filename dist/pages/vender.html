@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co https://accounts.google.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://*.googleusercontent.com https://*.supabase.co; connect-src 'self' https://*.supabase.co https://accounts.google.com;">
     <title>Vender - Baradero Local</title>
     <link
       rel="stylesheet"
@@ -120,100 +120,109 @@
         background: var(--bl-primary);
         color: white;
       }
-    </style>
-    <script type="module" crossorigin src="/assets/vender-boF1mnJX.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-Dezn_h7o.js">
-    <link rel="modulepreload" crossorigin href="/assets/auth-utils-CStluJ1I.js">
+    </style>
+    <script type="module" crossorigin src="/assets/vender-BNjYSazO.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/auth-utils-B4_VN3cS.js">
+    <link rel="stylesheet" crossorigin href="/assets/auth-B5dKITXG.css">
     <link rel="stylesheet" crossorigin href="/assets/home-BX-nhA4Z.css">
   </head>
   <body>
-    <!-- Navbar (Simplificado) -->
-    <nav class="navbar">
-      <div class="navbar__top">
-        <a href="./home.html" class="navbar__logo">
-          <span class="navbar__logo-icon">
-            <svg viewBox="0 0 100 100" width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50 0 C 22.4 0 0 22.4 0 50 C 0 75 50 100 50 100 C 50 100 100 75 100 50 C 100 22.4 77.6 0 50 0 Z" fill="#2d4a7c"/>
-              <rect x="23" y="25" width="9" height="30" fill="#ffffff"/>
-              <path d="M 6 65 L 50 33 L 94 65" stroke="#ffffff" stroke-width="11" stroke-linecap="butt" stroke-linejoin="miter"/>
-            </svg>
-          </span>
-          <div class="navbar__logo-text">
-            <span class="navbar__logo-title">Baradero Local</span>
-            <span class="navbar__logo-subtitle">Baradero, más cerca que nunca</span>
-          </div>
-        </a>
-        <div class="navbar__actions">
-          <a href="./home.html" class="navbar__action-circle" aria-label="Volver"><i class="fa-solid fa-arrow-left"></i></a>
-        </div>
-      </div>
-    </nav>
+    <!-- Loading screen -->
+    <div id="loading-screen" class="auth-loading-screen">
+      <div class="auth-loading-spinner"></div>
+      <span class="auth-loading-text">Verificando sesión...</span>
+    </div>
 
-    <main>
-      <div class="vender-container">
-        
-        <!-- Vista de Registro -->
-        <div id="register-view">
-          <div class="vender-header">
-            <h1>Empezá a vender en Baradero</h1>
-            <p>Completá los datos de tu comercio y sumate a la red local.</p>
+    <!-- Contenido principal -->
+    <div id="main-content">
+      <!-- Navbar (Simplificado) -->
+      <nav class="navbar">
+        <div class="navbar__top">
+          <a href="./home.html" class="navbar__logo">
+            <span class="navbar__logo-icon">
+              <svg viewBox="0 0 100 100" width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0 C 22.4 0 0 22.4 0 50 C 0 75 50 100 50 100 C 50 100 100 75 100 50 C 100 22.4 77.6 0 50 0 Z" fill="#2d4a7c"/>
+                <rect x="23" y="25" width="9" height="30" fill="#ffffff"/>
+                <path d="M 6 65 L 50 33 L 94 65" stroke="#ffffff" stroke-width="11" stroke-linecap="butt" stroke-linejoin="miter"/>
+              </svg>
+            </span>
+            <div class="navbar__logo-text">
+              <span class="navbar__logo-title">Baradero Local</span>
+              <span class="navbar__logo-subtitle">Baradero, más cerca que nunca</span>
+            </div>
+          </a>
+          <div class="navbar__actions">
+            <a href="./home.html" class="navbar__action-circle" aria-label="Volver"><i class="fa-solid fa-arrow-left"></i></a>
           </div>
-          <form id="seller-form">
-            <div class="form-group">
-              <label class="form-label" for="shop-name">Nombre del Comercio</label>
-              <input type="text" id="shop-name" class="form-input" placeholder="Ej: Panadería La Espiga" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="shop-category">Rubro Principal</label>
-              <select id="shop-category" class="form-input" required>
-                <option value="">Seleccioná un rubro...</option>
-                <option value="supermercado">Supermercado</option>
-                <option value="gastronomia">Gastronomía</option>
-                <option value="indumentaria">Indumentaria</option>
-                <option value="otros">Otros</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="shop-address">Dirección del Local</label>
-              <input type="text" id="shop-address" class="form-input" placeholder="Calle y número" required />
-            </div>
-            <button type="submit" class="form-btn">Crear mi tienda</button>
-          </form>
         </div>
+      </nav>
 
-        <!-- Vista del Panel -->
-        <div id="dashboard-view">
-          <div class="vender-header">
-            <h1>Panel de Vendedor</h1>
-            <p>Bienvenido, <strong id="dash-shop-name">Tu Comercio</strong></p>
-          </div>
+      <main>
+        <div class="vender-container">
           
-          <div class="dashboard-stats">
-            <div class="stat-card">
-              <h3>0</h3>
-              <p>Ventas Hoy</p>
+          <!-- Vista de Registro -->
+          <div id="register-view">
+            <div class="vender-header">
+              <h1>Empezá a vender en Baradero</h1>
+              <p>Completá los datos de tu comercio y sumate a la red local.</p>
             </div>
-            <div class="stat-card">
-              <h3>0</h3>
-              <p>Productos Activos</p>
+            <form id="seller-form">
+              <div class="form-group">
+                <label class="form-label" for="shop-name">Nombre del Comercio</label>
+                <input type="text" id="shop-name" class="form-input" placeholder="Ej: Panadería La Espiga" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="shop-category">Rubro Principal</label>
+                <select id="shop-category" class="form-input" required>
+                  <option value="">Seleccioná un rubro...</option>
+                  <option value="supermercado">Supermercado</option>
+                  <option value="gastronomia">Gastronomía</option>
+                  <option value="indumentaria">Indumentaria</option>
+                  <option value="otros">Otros</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="shop-address">Dirección del Local</label>
+                <input type="text" id="shop-address" class="form-input" placeholder="Calle y número" required />
+              </div>
+              <button type="submit" class="form-btn">Crear mi tienda</button>
+            </form>
+          </div>
+
+          <!-- Vista del Panel -->
+          <div id="dashboard-view">
+            <div class="vender-header">
+              <h1>Panel de Vendedor</h1>
+              <p>Bienvenido, <strong id="dash-shop-name">Tu Comercio</strong></p>
             </div>
-            <div class="stat-card">
-              <h3>$0</h3>
-              <p>Ingresos del Mes</p>
+            
+            <div class="dashboard-stats">
+              <div class="stat-card">
+                <h3>0</h3>
+                <p>Ventas Hoy</p>
+              </div>
+              <div class="stat-card">
+                <h3>0</h3>
+                <p>Productos Activos</p>
+              </div>
+              <div class="stat-card">
+                <h3>$0</h3>
+                <p>Ingresos del Mes</p>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button class="form-btn" style="width: auto; padding: 0.75rem 2rem;"><i class="fa-solid fa-plus"></i> Publicar Producto</button>
+              <button class="btn-outline" id="btn-logout-seller">Cerrar sesión de vendedor</button>
             </div>
           </div>
 
-          <div class="action-buttons">
-            <button class="form-btn" style="width: auto; padding: 0.75rem 2rem;"><i class="fa-solid fa-plus"></i> Publicar Producto</button>
-            <button class="btn-outline" id="btn-logout-seller">Cerrar sesión de vendedor</button>
-          </div>
         </div>
+      </main>
 
-      </div>
-    </main>
-
-    <!-- Notificación Toast -->
-    <div class="toast" id="toast" aria-live="polite" role="status"></div>
+      <!-- Notificación Toast -->
+      <div class="toast" id="toast" aria-live="polite" role="status"></div>
+    </div>
 
   </body>
 </html>

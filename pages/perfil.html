@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co https://accounts.google.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://*.googleusercontent.com https://*.supabase.co; connect-src 'self' https://*.supabase.co https://accounts.google.com;">
     <title>Mi Perfil - Baradero Local</title>
     <link
       rel="stylesheet"
@@ -15,52 +15,61 @@
     <link rel="stylesheet" href="../Assets/styles/auth.css" />
   </head>
   <body>
-    <main class="auth-layout">
-      <div class="auth-header">
-        <h1>Mi Perfil</h1>
-        <p id="session-status">Cargando sesión...</p>
-      </div>
+    <!-- Loading screen (se oculta cuando el guard confirma la auth) -->
+    <div id="loading-screen" class="auth-loading-screen">
+      <div class="auth-loading-spinner"></div>
+      <span class="auth-loading-text">Verificando sesión...</span>
+    </div>
 
-      <div class="auth-card">
-        <div class="profile-avatar-section">
-          <div class="profile-avatar">
-            <i class="fa-regular fa-user"></i>
-          </div>
-          <div id="user-role-badge" class="profile-badge">Cargando...</div>
+    <!-- Contenido principal (oculto hasta que el guard lo habilite) -->
+    <div id="main-content">
+      <main class="auth-layout">
+        <div class="auth-header">
+          <h1>Mi Perfil</h1>
+          <p id="session-status">Cargando sesión...</p>
         </div>
 
-        <div class="profile-details">
-          <div class="profile-detail-item">
-            <span class="profile-detail-label">
-              <i class="fa-regular fa-envelope"></i> Correo electrónico
-            </span>
-            <span id="user-email" class="profile-detail-value">-</span>
+        <div class="auth-card">
+          <div class="profile-avatar-section">
+            <div class="profile-avatar" id="profile-avatar-container">
+              <i class="fa-regular fa-user"></i>
+            </div>
+            <div id="user-role-badge" class="profile-badge">Cargando...</div>
           </div>
 
-          <div class="profile-detail-item">
-            <span class="profile-detail-label">
-              <i class="fa-regular fa-id-card"></i> Nombre y apellido
-            </span>
-            <span id="user-name" class="profile-detail-value">-</span>
+          <div class="profile-details">
+            <div class="profile-detail-item">
+              <span class="profile-detail-label">
+                <i class="fa-regular fa-envelope"></i> Correo electrónico
+              </span>
+              <span id="user-email" class="profile-detail-value">-</span>
+            </div>
+
+            <div class="profile-detail-item">
+              <span class="profile-detail-label">
+                <i class="fa-regular fa-id-card"></i> Nombre y apellido
+              </span>
+              <span id="user-name" class="profile-detail-value">-</span>
+            </div>
+
+            <div class="profile-detail-item">
+              <span class="profile-detail-label">
+                <i class="fa-solid fa-user-gear"></i> Rol de usuario
+              </span>
+              <span id="user-role" class="profile-detail-value">-</span>
+            </div>
           </div>
 
-          <div class="profile-detail-item">
-            <span class="profile-detail-label">
-              <i class="fa-solid fa-user-gear"></i> Rol de usuario
-            </span>
-            <span id="user-role" class="profile-detail-value">-</span>
-          </div>
+          <button id="logout-btn" class="auth-btn auth-btn-primary" type="button">
+            <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i> Cerrar sesión
+          </button>
+
+          <a href="./home.html" class="auth-btn auth-btn-ghost">
+            <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i> Volver al inicio
+          </a>
         </div>
-
-        <button id="logout-btn" class="auth-btn auth-btn-primary" type="button">
-          <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i> Cerrar sesión
-        </button>
-
-        <a href="./login.html" class="auth-btn auth-btn-ghost">
-          <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i> Volver al inicio de sesión
-        </a>
-      </div>
-    </main>
+      </main>
+    </div>
 
     <script type="module" src="../js/perfil.js"></script>
   </body>

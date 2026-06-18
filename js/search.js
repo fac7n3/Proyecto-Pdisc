@@ -1,48 +1,7 @@
 // Lógica para la página de búsqueda (search.html)
-const CART_KEY = 'bl_cart';
+import { supabase } from './auth-utils.js';
 
-function getCart() {
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    localStorage.removeItem(CART_KEY);
-    return [];
-  }
-}
-
-function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-}
-
-function parsePrice(text) {
-  if (!text) return 0;
-  return parseInt(text.replace(/[^0-9]/g, ''), 10) || 0;
-}
-
-function updateCartBadge() {
-  const cart = getCart();
-  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-  const badge = document.getElementById('cart-badge');
-  if (badge) {
-    badge.textContent = totalItems > 0 ? totalItems : '';
-    badge.dataset.count = totalItems;
-  }
-}
-
-function showToast(message, type = 'default') {
-  const toast = document.getElementById('toast');
-  if (!toast) return;
-  toast.textContent = message;
-  toast.className = 'toast';
-  if (type === 'success') toast.classList.add('toast--success');
-  toast.classList.add('toast--visible');
-
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => {
-    toast.classList.remove('toast--visible');
-  }, 2500);
-}
+import { getCart, saveCart, parsePrice, updateCartBadge, showToast } from './cart-utils.js';
 
 function initCartButtons() {
   document.querySelectorAll('.product-card__add').forEach((btn) => {

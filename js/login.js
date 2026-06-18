@@ -1,4 +1,4 @@
-import { supabase, showToast, setLoading, isValidEmail, checkUrlErrors, setupGlobalSessionListener } from "./auth-utils.js";
+import { supabase, showToast, setLoading, isValidEmail, checkUrlErrors, guardPage } from "./auth-utils.js";
 
 const emailInput = document.getElementById("correo");
 const passwordInput = document.getElementById("password");
@@ -102,60 +102,71 @@ async function loginWithGoogle() {
   }
 }
 
-// --- Manejadores de Eventos ---
-const loginForm = document.getElementById("login-form");
-loginForm?.addEventListener("submit", (e) => {
-  e.preventDefault();
-  loginLocal();
-});
+// --- Manejadores de Eventos (se inicializan dentro del guard) ---
+function initLoginForm() {
+  const loginForm = document.getElementById("login-form");
+  loginForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    loginLocal();
+  });
 
-googleLoginBtn?.addEventListener("click", loginWithGoogle);
+  googleLoginBtn?.addEventListener("click", loginWithGoogle);
 
-// Alternar visibilidad de contraseña
-const togglePasswordBtn = document.getElementById("toggle-password");
-togglePasswordBtn?.addEventListener("click", () => {
-  const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-  passwordInput.setAttribute("type", type);
-  
-  const icon = togglePasswordBtn.querySelector("i");
-  if (icon) {
-    if (type === "text") {
-      icon.className = "fa-regular fa-eye-slash";
-      togglePasswordBtn.setAttribute("aria-label", "Ocultar contraseña");
-    } else {
-      icon.className = "fa-regular fa-eye";
-      togglePasswordBtn.setAttribute("aria-label", "Mostrar contraseña");
+  // Alternar visibilidad de contraseña
+  const togglePasswordBtn = document.getElementById("toggle-password");
+  togglePasswordBtn?.addEventListener("click", () => {
+    const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+    passwordInput.setAttribute("type", type);
+    
+    const icon = togglePasswordBtn.querySelector("i");
+    if (icon) {
+      if (type === "text") {
+        icon.className = "fa-regular fa-eye-slash";
+        togglePasswordBtn.setAttribute("aria-label", "Ocultar contraseña");
+      } else {
+        icon.className = "fa-regular fa-eye";
+        togglePasswordBtn.setAttribute("aria-label", "Mostrar contraseña");
+      }
     }
-  }
-});
+  });
 
-// --- Olvidaste tu contraseña ---
-const forgotPasswordLink = document.getElementById("forgot-password-link");
-forgotPasswordLink?.addEventListener("click", async (e) => {
-  e.preventDefault();
-  const email = emailInput?.value?.trim() ?? "";
-  if (!email || !isValidEmail(email)) {
-    showToast("Por favor, ingresá un correo válido en el campo superior para recuperar tu contraseña.", "error");
-    emailInput?.focus();
-    return;
-  }
-
-  try {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/pages/login.html`, // O una página de reseteo si la hay
-    });
-    if (error) {
-      console.error("Reset password error:", error);
-      showToast("Hubo un error al intentar enviar el correo. Intentá nuevamente.", "error");
-    } else {
-      showToast("¡Te enviamos un correo con las instrucciones para recuperar tu contraseña!", "success");
+  // --- Olvidaste tu contraseña ---
+  const forgotPasswordLink = document.getElementById("forgot-password-link");
+  forgotPasswordLink?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const email = emailInput?.value?.trim() ?? "";
+    if (!email || !isValidEmail(email)) {
+      showToast("Por favor, ingresá un correo válido en el campo superior para recuperar tu contraseña.", "error");
+      emailInput?.focus();
+      return;
     }
-  } catch (err) {
-    console.error("Unexpected reset error:", err);
-    showToast("Error inesperado. Intentá de nuevo más tarde.", "error");
-  }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/pages/login.html`,
+      });
+      if (error) {
+        console.error("Reset password error:", error);
+        showToast("Hubo un error al intentar enviar el correo. Intentá nuevamente.", "error");
+      } else {
+        showToast("¡Te enviamos un correo con las instrucciones para recuperar tu contraseña!", "success");
+      }
+    } catch (err) {
+      console.error("Unexpected reset error:", err);
+      showToast("Error inesperado. Intentá de nuevo más tarde.", "error");
+    }
+  });
+
+  // Verificar errores OAuth en la URL
+  checkUrlErrors();
+}
+
+// --- Inicialización con Guard ---
+// Página INVERSA: si hay sesión → redirigir a Home. Si no hay → mostrar formulario.
+guardPage({
+  redirectIfAuth: true,
+  onReady: () => {
+    initLoginForm();
+  },
 });
 
-// Inicialización de la página
-setupGlobalSessionListener(false, true); // No redirigir si no hay sesión, SI redirigir si hay sesión
-checkUrlErrors();
