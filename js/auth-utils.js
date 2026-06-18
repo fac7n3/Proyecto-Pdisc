@@ -141,11 +141,11 @@ export function setupGlobalSessionListener(redirectIfNoSession = false, redirect
     }
   });
 
-  // Verificar sesión inicial
-  supabase.auth.getUser().then(({ data: { user } }) => {
-    if (!user && redirectIfNoSession) {
+  // Verificar sesión inicial (leer desde localStorage primero)
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (!session && redirectIfNoSession) {
       window.location.replace("../pages/login.html");
-    } else if (user && redirectIfSession) {
+    } else if (session && redirectIfSession) {
       window.location.replace("../pages/home.html");
     }
   }).catch((err) => {
@@ -180,14 +180,32 @@ export async function guardPage({
   if (loadingScreen) loadingScreen.style.display = 'flex';
 
   try {
-    // 2. Verificar sesión con el servidor (no confiar solo en localStorage)
-    const { data: { user }, error } = await supabase.auth.getUser();
+    // 2. Primero verificar si hay sesión local (rápido, sin red)
+    //    Esto evita race conditions donde getUser() falla porque el
+    //    cliente aún no terminó de leer la sesión de localStorage.
+    const { data: { session: localSession } } = await supabase.auth.getSession();
 
-    if (error && error.message !== 'Auth session missing!') {
-      console.warn('Auth check error:', error.message);
+    let user = null;
+
+    if (localSession) {
+      // 3. Hay sesión en localStorage → verificar con el servidor
+      const { data: { user: verifiedUser }, error } = await supabase.auth.getUser();
+
+      if (error) {
+        console.warn('Auth verification error:', error.message);
+        // Si getUser falla pero hay sesión local, intentar refrescar
+        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+        if (!refreshError && refreshData?.user) {
+          user = refreshData.user;
+        }
+        // Si el refresh también falla, user queda null
+      } else {
+        user = verifiedUser;
+      }
     }
+    // Si no hay localSession, user queda null (no hay sesión)
 
-    // 3. Lógica de redirección
+    // 4. Lógica de redirección
     if (!user && requireAuth) {
       // No autenticado en página privada → a login
       window.location.replace(redirectTo || '../pages/login.html');
@@ -200,7 +218,7 @@ export async function guardPage({
       return null;
     }
 
-    // 4. Auth confirmada → mostrar contenido
+    // 5. Auth confirmada → mostrar contenido
     if (mainContent) {
       mainContent.style.visibility = 'visible';
       mainContent.style.opacity = '0';
@@ -217,7 +235,7 @@ export async function guardPage({
       }, 300);
     }
 
-    // 5. Configurar listener para cambios de sesión en tiempo real
+    // 6. Configurar listener para cambios de sesión en tiempo real
     supabase.auth.onAuthStateChange((event) => {
       if (isHandlingRedirect) return;
 
@@ -230,7 +248,7 @@ export async function guardPage({
       }
     });
 
-    // 6. Ejecutar callback con datos del usuario
+    // 7. Ejecutar callback con datos del usuario
     if (onReady) onReady(user);
 
     return user;
