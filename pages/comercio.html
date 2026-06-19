@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://*.googleusercontent.com https://*.supabase.co; connect-src 'self' https://*.supabase.co https://accounts.google.com;">
+    <title>Cargando comercio... — Baradero Local</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="../Assets/styles/home.css" />
+    <link rel="stylesheet" href="../Assets/styles/carrito.css" />
+    <link rel="stylesheet" href="../Assets/styles/product-modal.css" />
+    <style>
+      .store-header {
+        background: var(--bl-surface);
+        padding: 3rem 1.5rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--bl-border);
+        text-align: center;
+      }
+      .store-header__title {
+        font-size: 2.5rem;
+        color: var(--bl-text);
+        margin: 0 0 0.5rem 0;
+        font-weight: 800;
+      }
+      .store-header__description {
+        color: var(--bl-text-light);
+        max-width: 600px;
+        margin: 0 auto 1.5rem auto;
+      }
+      .store-header__meta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        color: var(--bl-text-light);
+        font-size: 0.875rem;
+      }
+      .store-header__meta span i {
+        color: var(--bl-primary);
+        margin-right: 0.5rem;
+      }
+      .store-products {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem 4rem 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ====== BARRA DE NAVEGACIÓN ====== -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+      <div class="navbar__top">
+        <a href="./home.html" class="navbar__logo" id="navbar-logo">
+          <img src="../Assets/images/Logos/logoazulpng.png" alt="Baradero Local" class="navbar__logo-img" />
+          <div class="navbar__logo-text">
+            <span class="navbar__logo-title">Baradero Local</span>
+            <span class="navbar__logo-subtitle">Baradero, más cerca que nunca</span>
+          </div>
+        </a>
+        <div class="navbar__actions">
+          <a href="./perfil.html" class="navbar__action-circle" id="nav-profile" aria-label="Mi cuenta"><i class="fa-regular fa-user"></i></a>
+          <a href="./carrito.html" class="navbar__action-circle" id="nav-cart" aria-label="Carrito de compras">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="cart-badge" id="cart-badge"></span>
+          </a>
+        </div>
+      </div>
+      <div class="navbar__search-wrapper">
+        <div class="navbar__search">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="search" id="search-input" class="navbar__search-input" placeholder="¿Qué estás buscando?" autocomplete="off" />
+        </div>
+      </div>
+    </nav>
+
+    <main id="main-content">
+      <div style="text-align: center; padding: 4rem; color: #64748b;">
+        Cargando comercio...
+      </div>
+    </main>
+
+    <!-- ====== PIE DE PÁGINA ====== -->
+    <footer class="footer">
+      <div class="footer__inner">
+        <div class="footer__brand-container">
+          <div class="footer__brand-logo-text">
+            <span class="bl-text-stroke">BARADERO</span>
+            <span class="bl-text-stroke bl-text-stroke--white">LOCAL</span>
+          </div>
+          <p class="footer__brand-slogan">"Mientras otras plataformas conectan personas lejanas, nosotros conectamos vecinos".</p>
+        </div>
+        <div class="footer__bottom">
+          <span>&copy; 2026 Baradero Local. Todos los derechos reservados.</span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Notificación Toast -->
+    <div class="toast" id="toast" aria-live="polite" role="status"></div>
+
+    <script type="module" src="../js/product-modal.js"></script>
+    <script type="module" src="../js/comercio.js"></script>
+  </body>
+</html>

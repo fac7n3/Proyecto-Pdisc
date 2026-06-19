@@ -147,16 +147,130 @@ function initNavbarScroll() {
   }, { passive: true });
 }
 
+/** Obtener categorías de Supabase */
+async function loadCategories() {
+  const container = document.querySelector('.category-bar__inner');
+  if (!container) return;
+
+  try {
+    const { data: categories, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name');
+
+    if (error) throw error;
+    if (!categories || categories.length === 0) return;
+
+    // Remove old dynamic items if any (keep Inicio and Ofertas, and dropdown)
+    // Actually, let's reconstruct it
+    const dropdownHtml = `
+      <div class="category-bar__dropdown">
+        <a href="#" class="category-bar__item" id="cat-mas">
+          Más <i class="fa-solid fa-chevron-down" style="font-size:0.625rem; opacity:0.5; margin-left:0.25rem;"></i>
+        </a>
+        <div class="category-bar__dropdown-menu" role="menu">
+          <a href="./vender.html" class="category-bar__dropdown-item" role="menuitem" style="color: var(--bl-primary); font-weight: 600;"><i class="fa-solid fa-store" style="color: inherit;"></i> Vender</a>
+        </div>
+      </div>
+    `;
+
+    // Static beginning
+    let html = `
+      <a href="#" class="category-bar__item category-bar__item--active" id="cat-inicio">Inicio</a>
+      <a href="#" class="category-bar__item" id="cat-ofertas">Ofertas</a>
+    `;
+
+    // Dynamic items
+    categories.forEach(cat => {
+      html += `<a href="#" class="category-bar__item" data-filter="${cat.slug}" id="cat-${cat.slug}">${cat.name}</a>`;
+    });
+
+    html += dropdownHtml;
+
+    container.innerHTML = html;
+    initCategoriesRedirect(); // re-bind listeners
+  } catch (err) {
+    console.error('Error fetching categories:', err);
+  }
+}
+
+/** Obtener productos de Supabase */
+async function loadProducts() {
+  const grid = document.getElementById('products-grid');
+  if (!grid) return;
+
+  try {
+    const { data: products, error } = await supabase
+      .from('products')
+      .select(`
+        id,
+        title,
+        price_cents,
+        image_url,
+        stock,
+        stores ( name )
+      `)
+      .eq('is_active', true)
+      .limit(12);
+
+    if (error) throw error;
+
+    grid.innerHTML = ''; // Limpiar skeletons
+
+    if (!products || products.length === 0) {
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #64748b;">Aún no hay productos disponibles.</div>';
+      return;
+    }
+
+    products.forEach(product => {
+      const priceStr = (product.price_cents / 100).toLocaleString('es-AR');
+      const storeName = product.stores ? product.stores.name : 'Tienda';
+      
+      const article = document.createElement('article');
+      article.className = 'product-card';
+      article.id = product.id;
+      
+      article.innerHTML = `
+        <div class="product-card__image">
+          <img src="${product.image_url || '../Assets/images/default-product.png'}" alt="${product.title}" loading="lazy" />
+          <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
+        </div>
+        <div class="product-card__body">
+          <span class="product-card__shop"><i class="fa-solid fa-store"></i> ${storeName}</span>
+          <h3 class="product-card__name">${product.title}</h3>
+          <div class="product-card__price-row">
+            <span class="product-card__price">$${priceStr}</span>
+          </div>
+          <span class="product-card__shipping"><i class="fa-solid fa-truck"></i> Calcular envío</span>
+          <button class="product-card__add" data-product-id="${product.id}"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+        </div>
+      `;
+      grid.appendChild(article);
+    });
+
+    // Re-bind events to new DOM elements
+    initCartButtons();
+    initWishlist();
+
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 2rem;">Error al cargar productos.</div>';
+  }
+}
+
 // Inicializar todo
 document.addEventListener('DOMContentLoaded', () => {
-  initCartButtons();
-  initWishlist();
   initSearchRedirect();
   initCategoriesRedirect();
   initScrollTop();
   initNavbarScroll();
   updateCartBadge();
+  
+  // Cargar datos dinámicos
+  loadCategories();
+  loadProducts();
 
   // Modal de detalle de producto
   if (typeof initProductModal === 'function') initProductModal();
 });
+

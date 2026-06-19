@@ -65,54 +65,158 @@ const filterState = {
   sortBy: 'relevancia'
 };
 
-function applyFilters() {
-  const products = Array.from(document.querySelectorAll('.product-card'));
+async function applyFilters() {
   const grid = document.getElementById('products-grid');
-  if (!grid) return;
-  let visibleCount = 0;
-
-  products.forEach(card => {
-    const name = card.querySelector('.product-card__name')?.textContent.toLowerCase() || '';
-    const shop = card.querySelector('.product-card__shop')?.textContent.toLowerCase() || '';
-    const matchQuery = !filterState.query || name.includes(filterState.query) || shop.includes(filterState.query);
-
-    const cardZone = card.dataset.zone || 'todas';
-    const matchZone = filterState.zone === 'todas' || cardZone === filterState.zone;
-
-    const categories = (card.dataset.category || '').split(' ');
-    const matchCategory = filterState.category === 'todas' || categories.includes(filterState.category);
-
-    const cardDistance = parseInt(card.dataset.distance || '0', 10);
-    const matchDistance = cardDistance <= filterState.distance;
-
-    const isVisible = matchQuery && matchZone && matchCategory && matchDistance;
-    card.style.display = isVisible ? '' : 'none';
-    if (isVisible) visibleCount++;
-  });
-
-  const visibleProducts = products.filter(card => card.style.display !== 'none');
-  
-  visibleProducts.sort((a, b) => {
-    if (filterState.sortBy === 'nombre') {
-      const nameA = a.querySelector('.product-card__name')?.textContent || '';
-      const nameB = b.querySelector('.product-card__name')?.textContent || '';
-      return nameA.localeCompare(nameB);
-    } else if (filterState.sortBy === 'distancia') {
-      const distA = parseInt(a.dataset.distance || '0', 10);
-      const distB = parseInt(b.dataset.distance || '0', 10);
-      return distA - distB;
-    } else if (filterState.sortBy === 'precio-asc' || filterState.sortBy === 'precio-desc') {
-      const priceA = parsePrice(a.querySelector('.product-card__price')?.textContent || '0');
-      const priceB = parsePrice(b.querySelector('.product-card__price')?.textContent || '0');
-      return filterState.sortBy === 'precio-asc' ? priceA - priceB : priceB - priceA;
-    }
-    return 0;
-  });
-
-  visibleProducts.forEach(card => grid.appendChild(card));
-
   const countEl = document.getElementById('catalog-count');
-  if (countEl) countEl.textContent = `${visibleCount} resultado${visibleCount !== 1 ? 's' : ''}`;
+  if (!grid) return;
+
+  grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #64748b;">Cargando...</div>';
+
+  try {
+    let query = supabase
+      .from('products')
+      .select('*, stores(name), categories!inner(slug)', { count: 'exact' })
+      .eq('is_active', true);
+
+    // Apply text search
+    if (filterState.query) {
+      query = query.ilike('title', `%${filterState.query}%`);
+    }
+
+    // Apply category filter
+    if (filterState.category !== 'todas') {
+      query = query.eq('categories.slug', filterState.category);
+    }
+
+    // Apply sorting
+    if (filterState.sortBy === 'nombre') {
+      query = query.order('title', { ascending: true });
+    } else if (filterState.sortBy === 'precio-asc') {
+      query = query.order('price_cents', { ascending: true });
+    } else if (filterState.sortBy === 'precio-desc') {
+      query = query.order('price_cents', { ascending: false });
+    } else {
+      // default: created_at desc (or whatever 'relevancia' means)
+      query = query.order('created_at', { ascending: false });
+    }
+
+    const { data: products, count, error } = await query;
+
+    if (error) throw error;
+
+    grid.innerHTML = ''; // clear loading
+    
+    if (countEl) {
+      countEl.textContent = `${count} resultado${count !== 1 ? 's' : ''}`;
+    }
+
+    if (!products || products.length === 0) {
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #64748b;">No se encontraron productos con estos filtros.</div>';
+      return;
+    }
+
+    products.forEach(product => {
+      const priceStr = (product.price_cents / 100).toLocaleString('es-AR');
+      const storeName = product.stores ? product.stores.name : 'Tienda';
+      
+      const article = document.createElement('article');
+      article.className = 'product-card';
+      article.id = product.id;
+      
+      article.innerHTML = `
+        <div class="product-card__image">
+          <img src="${product.image_url || '../Assets/images/default-product.png'}" alt="${product.title}" loading="lazy" />
+          <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
+        </div>
+        <div class="product-card__body">
+          <span class="product-card__shop"><i class="fa-solid fa-store"></i> ${storeName}</span>
+          <h3 class="product-card__name">${product.title}</h3>
+          <div class="product-card__price-row">
+            <span class="product-card__price">$${priceStr}</span>
+          </div>
+          <button class="product-card__add" data-product-id="${product.id}"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+        </div>
+      `;
+      grid.appendChild(article);
+    });
+
+    initCartButtons();
+    initWishlist();
+
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 2rem;">Error al buscar productos.</div>';
+  }
+}
+
+async function loadCategories() {
+  const topNav = document.querySelector('.category-bar__inner');
+  const sidebarNav = document.getElementById('filter-categories');
+
+  try {
+    const { data: categories, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name');
+
+    if (error) throw error;
+    if (!categories || categories.length === 0) return;
+
+    // Top Nav
+    if (topNav) {
+      const dropdownHtml = `
+        <div class="category-bar__dropdown">
+          <a href="#" class="category-bar__item" id="cat-mas">
+            Más <i class="fa-solid fa-chevron-down" style="font-size:0.625rem; opacity:0.5; margin-left:0.25rem;"></i>
+          </a>
+          <div class="category-bar__dropdown-menu" role="menu">
+            <a href="./vender.html" class="category-bar__dropdown-item" role="menuitem" style="color: var(--bl-primary); font-weight: 600;"><i class="fa-solid fa-store" style="color: inherit;"></i> Vender</a>
+          </div>
+        </div>
+      `;
+      let html = `
+        <a href="#" class="category-bar__item category-bar__item--active" id="cat-inicio">Inicio</a>
+        <a href="#" class="category-bar__item" id="cat-ofertas">Ofertas</a>
+      `;
+      categories.forEach(cat => {
+        html += `<a href="#" class="category-bar__item" data-filter="${cat.slug}" id="cat-${cat.slug}">${cat.name}</a>`;
+      });
+      html += dropdownHtml;
+      topNav.innerHTML = html;
+    }
+
+    // Sidebar Nav
+    if (sidebarNav) {
+      let html = `<button class="filter-pill filter-pill--active" data-cat="todas">Todas</button>`;
+      categories.forEach(cat => {
+        html += `<button class="filter-pill" data-cat="${cat.slug}">${cat.name}</button>`;
+      });
+      sidebarNav.innerHTML = html;
+      
+      // Re-bind listeners for newly created pills
+      const newPills = sidebarNav.querySelectorAll('.filter-pill');
+      newPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          newPills.forEach(p => p.classList.remove('filter-pill--active'));
+          pill.classList.add('filter-pill--active');
+          filterState.category = pill.dataset.cat || 'todas';
+          
+          const url = new URL(window.location);
+          if (filterState.category !== 'todas') url.searchParams.set('cat', filterState.category);
+          else url.searchParams.delete('cat');
+          window.history.replaceState({}, '', url);
+
+          applyFilters();
+        });
+      });
+    }
+
+    // Initialize top nav category interactions
+    initTopCategories();
+
+  } catch (err) {
+    console.error('Error fetching categories:', err);
+  }
 }
 
 function initAdvancedFilters() {
@@ -123,7 +227,6 @@ function initAdvancedFilters() {
   const distanceValue = document.getElementById('distance-value');
   const sortSelect = document.getElementById('filter-sort');
   const applyBtn = document.getElementById('filters-apply-btn');
-  const categoryPills = document.querySelectorAll('.filter-pill');
 
   // Leer parámetros de URL
   const params = new URLSearchParams(window.location.search);
@@ -132,11 +235,9 @@ function initAdvancedFilters() {
     if (navInput) navInput.value = params.get('q');
     if (sidebarInput) sidebarInput.value = params.get('q');
   }
+
   if (params.has('cat')) {
     filterState.category = params.get('cat');
-    categoryPills.forEach(p => p.classList.remove('filter-pill--active'));
-    const activePill = Array.from(categoryPills).find(p => p.dataset.cat === filterState.category);
-    if (activePill) activePill.classList.add('filter-pill--active');
   }
 
   // Inputs de búsqueda
@@ -175,21 +276,6 @@ function initAdvancedFilters() {
     applyFilters();
   });
 
-  categoryPills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      categoryPills.forEach(p => p.classList.remove('filter-pill--active'));
-      pill.classList.add('filter-pill--active');
-      filterState.category = pill.dataset.cat || 'todas';
-      
-      const url = new URL(window.location);
-      if (filterState.category !== 'todas') url.searchParams.set('cat', filterState.category);
-      else url.searchParams.delete('cat');
-      window.history.replaceState({}, '', url);
-
-      applyFilters();
-    });
-  });
-
   applyBtn?.addEventListener('click', () => {
     applyFilters();
     showToast('Filtros aplicados');
@@ -207,8 +293,6 @@ function initAdvancedFilters() {
   sidebarClose?.addEventListener('click', () => {
     sidebar?.classList.remove('is-open');
   });
-
-  applyFilters();
 }
 
 function initTopCategories() {
@@ -275,14 +359,15 @@ function initNavbarScroll() {
   }, { passive: true });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  initCartButtons();
-  initWishlist();
+document.addEventListener('DOMContentLoaded', async () => {
   initAdvancedFilters();
-  initTopCategories();
   initScrollTop();
   initNavbarScroll();
   updateCartBadge();
+
+  // Load categories then products
+  await loadCategories();
+  applyFilters();
 
   // Modal de detalle de producto
   if (typeof initProductModal === 'function') initProductModal();
