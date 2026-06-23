@@ -5,73 +5,204 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://*.googleusercontent.com https://*.supabase.co; connect-src 'self' https://*.supabase.co https://accounts.google.com;">
     <title>Mi Perfil - Baradero Local</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
       integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
-    />
-    <script type="module" crossorigin src="/assets/perfil-BOBxFnv8.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/auth-utils-B4_VN3cS.js">
-    <link rel="stylesheet" crossorigin href="/assets/auth-B5dKITXG.css">
+    />
+    <script type="module" crossorigin src="/assets/perfil-CpyQVDik.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/auth-utils-C2XCX4Fn.js">
+    <link rel="stylesheet" crossorigin href="/assets/perfil-BIlfZOJD.css">
+    <link rel="stylesheet" crossorigin href="/assets/home-BX-nhA4Z.css">
   </head>
   <body>
-    <!-- Loading screen (se oculta cuando el guard confirma la auth) -->
-    <div id="loading-screen" class="auth-loading-screen">
-      <div class="auth-loading-spinner"></div>
-      <span class="auth-loading-text">Verificando sesión...</span>
-    </div>
-
-    <!-- Contenido principal (oculto hasta que el guard lo habilite) -->
-    <div id="main-content">
-      <main class="auth-layout">
-        <div class="auth-header">
-          <h1>Mi Perfil</h1>
-          <p id="session-status">Cargando sesión...</p>
-        </div>
-
-        <div class="auth-card">
-          <div class="profile-avatar-section">
-            <div class="profile-avatar" id="profile-avatar-container">
-              <i class="fa-regular fa-user"></i>
-            </div>
-            <div id="user-role-badge" class="profile-badge">Cargando...</div>
+    <!-- ====== BARRA DE NAVEGACIÓN (Consistente con el resto del sitio) ====== -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+      <div class="navbar__top">
+        <a href="./home.html" class="navbar__logo" id="navbar-logo">
+          <img src="/assets/logoazulpng-BmcneNO6.png" alt="Baradero Local" class="navbar__logo-img" />
+          <div class="navbar__logo-text">
+            <span class="navbar__logo-title">Baradero Local</span>
+            <span class="navbar__logo-subtitle">Baradero, más cerca que nunca</span>
           </div>
-
-          <div class="profile-details">
-            <div class="profile-detail-item">
-              <span class="profile-detail-label">
-                <i class="fa-regular fa-envelope"></i> Correo electrónico
-              </span>
-              <span id="user-email" class="profile-detail-value">-</span>
-            </div>
-
-            <div class="profile-detail-item">
-              <span class="profile-detail-label">
-                <i class="fa-regular fa-id-card"></i> Nombre y apellido
-              </span>
-              <span id="user-name" class="profile-detail-value">-</span>
-            </div>
-
-            <div class="profile-detail-item">
-              <span class="profile-detail-label">
-                <i class="fa-solid fa-user-gear"></i> Rol de usuario
-              </span>
-              <span id="user-role" class="profile-detail-value">-</span>
-            </div>
-          </div>
-
-          <button id="logout-btn" class="auth-btn auth-btn-primary" type="button">
-            <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i> Cerrar sesión
-          </button>
-
-          <a href="./home.html" class="auth-btn auth-btn-ghost">
-            <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i> Volver al inicio
+        </a>
+        <div class="navbar__actions">
+          <a href="./perfil.html" class="navbar__action-circle" id="nav-profile" aria-label="Mi cuenta">
+            <i class="fa-solid fa-user" style="font-size: 0.875rem;"></i>
+          </a>
+          <a href="./carrito.html" class="navbar__action-circle" id="nav-cart" aria-label="Carrito de compras">
+            <i class="fa-solid fa-cart-shopping" style="font-size: 0.875rem;"></i>
+            <span class="cart-badge" id="cart-badge" style="display:none;"></span>
           </a>
         </div>
+      </div>
+    </nav>
+
+    <!-- ====== CONTENIDO DEL PERFIL ====== -->
+    <div class="profile-container" id="main-content" style="display: none;">
+      
+      <!-- Menú Lateral -->
+      <aside class="profile-sidebar">
+        <div class="profile-sidebar__header">
+          <div class="profile-avatar-large skeleton skeleton-avatar" id="sidebar-avatar">
+            <i class="fa-regular fa-user"></i>
+          </div>
+          <p class="profile-sidebar__name skeleton skeleton-text" id="sidebar-name">Cargando...</p>
+          <p class="profile-sidebar__email skeleton skeleton-text skeleton-text-short" id="sidebar-email"></p>
+        </div>
+        <nav class="profile-nav" role="navigation" aria-label="Menú de perfil">
+          <a href="#" class="profile-nav__link profile-nav__link--active" data-target="tab-mis-datos">
+            <i class="fa-solid fa-id-card"></i> <span>Mis datos</span>
+          </a>
+          <a href="#" class="profile-nav__link" data-target="tab-compras">
+            <i class="fa-solid fa-box-open"></i> <span>Mis compras</span>
+          </a>
+          <a href="#" class="profile-nav__link" data-target="tab-favoritos">
+            <i class="fa-solid fa-heart"></i> <span>Favoritos</span>
+          </a>
+          <a href="#" class="profile-nav__link" data-target="tab-direcciones">
+            <i class="fa-solid fa-location-dot"></i> <span>Direcciones</span>
+          </a>
+          <hr style="border:none; border-top: 1px solid var(--bl-perfil-border); margin: 0.5rem 0;" />
+          <a href="#" class="profile-nav__link profile-nav__link--danger" id="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> <span>Cerrar sesión</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Panel Principal -->
+      <main class="profile-content">
+        
+        <!-- ======================= -->
+        <!-- PESTAÑA: MIS DATOS      -->
+        <!-- ======================= -->
+        <div id="tab-mis-datos" class="tab-pane active" style="display: contents;">
+          <!-- Tarjeta: Info Personal -->
+          <article class="perfil-card">
+            <h2 class="perfil-card__title">
+              <i class="fa-solid fa-user-pen"></i> Información personal
+            </h2>
+            <div class="detail-list">
+              <div class="detail-item">
+                <span class="detail-label">Nombre y apellido</span>
+                <span class="detail-value skeleton skeleton-text" id="card-name">Cargando nombre</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Correo electrónico</span>
+                <span class="detail-value skeleton skeleton-text" id="card-email">cargando@email.com</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Tarjeta: Nivel / Beneficios -->
+          <article class="perfil-card">
+            <h2 class="perfil-card__title">
+              <i class="fa-solid fa-award"></i> Mi cuenta
+            </h2>
+            <div class="detail-list" style="align-items: flex-start;">
+              <div class="detail-item">
+                <span class="detail-label" style="margin-bottom: 0.5rem;">Rol actual</span>
+                <div class="level-badge skeleton" id="card-role">Cargando rol...</div>
+              </div>
+              <p style="color: var(--bl-perfil-text-sec); font-size: 0.875rem; margin-top: 1rem;">
+                Disfrutá de todos los beneficios de comprar en comercios locales con Baradero Local.
+              </p>
+            </div>
+          </article>
+
+          <!-- Tarjeta: Accesos Rápidos (Full width) -->
+          <article class="perfil-card perfil-card--full">
+            <h2 class="perfil-card__title">
+              <i class="fa-solid fa-bolt"></i> Accesos rápidos
+            </h2>
+            <div class="quick-access-grid">
+              <a href="./home.html" class="quick-btn">
+                <i class="fa-solid fa-store"></i>
+                Ir a comprar
+              </a>
+              <a href="./search.html" class="quick-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Buscar productos
+              </a>
+              <a href="./carrito.html" class="quick-btn">
+                <i class="fa-solid fa-cart-shopping"></i>
+                Mi carrito
+              </a>
+              <a href="./vender.html" class="quick-btn">
+                <i class="fa-solid fa-shop"></i>
+                Quiero vender
+              </a>
+            </div>
+          </article>
+        </div>
+
+        <!-- ======================= -->
+        <!-- PESTAÑA: MIS COMPRAS    -->
+        <!-- ======================= -->
+        <div id="tab-compras" class="tab-pane" style="display: none; grid-column: 1 / -1;">
+          <article class="perfil-card perfil-card--full">
+            <h2 class="perfil-card__title">
+              <i class="fa-solid fa-box-open"></i> Mi historial de compras
+            </h2>
+            <div id="compras-container" class="compras-list">
+              <!-- Renderizado por JS -->
+              <p style="color: var(--bl-perfil-text-sec);">Cargando tus compras...</p>
+            </div>
+          </article>
+        </div>
+
+        <!-- ======================= -->
+        <!-- PESTAÑA: FAVORITOS      -->
+        <!-- ======================= -->
+        <div id="tab-favoritos" class="tab-pane" style="display: none; grid-column: 1 / -1;">
+          <article class="perfil-card perfil-card--full">
+            <h2 class="perfil-card__title">
+              <i class="fa-solid fa-heart" style="color: #ef4444;"></i> Mis favoritos
+            </h2>
+            <div id="favoritos-container" class="favoritos-grid">
+              <!-- Renderizado por JS -->
+              <p style="color: var(--bl-perfil-text-sec);">Cargando tus favoritos...</p>
+            </div>
+          </article>
+        </div>
+
+        <!-- ======================= -->
+        <!-- PESTAÑA: DIRECCIONES    -->
+        <!-- ======================= -->
+        <div id="tab-direcciones" class="tab-pane" style="display: none; grid-column: 1 / -1;">
+          <article class="perfil-card perfil-card--full">
+            <h2 class="perfil-card__title">
+              <i class="fa-solid fa-location-dot"></i> Direcciones de envío
+            </h2>
+            <form id="direcciones-form" class="direcciones-form">
+              <div class="form-group">
+                <label for="address-phone" class="detail-label">Teléfono de contacto</label>
+                <input type="text" id="address-phone" class="bl-input" placeholder="Ej: 3329 123456" />
+              </div>
+              <div class="form-group">
+                <label for="address-main" class="detail-label">Dirección (Calle y Número)</label>
+                <input type="text" id="address-main" class="bl-input" placeholder="Ej: San Martín 1234" />
+              </div>
+              <div class="form-group">
+                <label for="address-details" class="detail-label">Detalles (Piso, depto, indicaciones)</label>
+                <input type="text" id="address-details" class="bl-input" placeholder="Ej: Piso 2, depto B, puerta negra" />
+              </div>
+              <button type="submit" class="bl-btn bl-btn-primary" id="btn-save-address" style="width: fit-content; margin-top: 1rem;">
+                Guardar cambios
+              </button>
+            </form>
+          </article>
+        </div>
+
       </main>
+
     </div>
-
+
+    <!-- Notificación Toast -->
+    <div class="toast" id="toast" aria-live="polite" role="status"></div>
+
   </body>
 </html>

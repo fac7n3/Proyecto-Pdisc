@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://*.googleusercontent.com https://*.supabase.co; connect-src 'self' https://*.supabase.co https://accounts.google.com;">
+    <title>Cargando Producto... — Baradero Local</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+      .product-page {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+      }
+      .product-gallery {
+        background: #fff;
+        border-radius: var(--bl-radius-lg);
+        padding: 2rem;
+        box-shadow: var(--bl-shadow-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 1;
+      }
+      .product-gallery img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .product-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .product-shop {
+        font-size: 0.875rem;
+        color: var(--bl-text-light);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+      }
+      .product-title {
+        font-size: 2rem;
+        color: var(--bl-text);
+        font-weight: 700;
+        line-height: 1.2;
+        margin: 0;
+      }
+      .product-price {
+        font-size: 2.5rem;
+        color: var(--bl-text);
+        font-weight: 800;
+      }
+      .product-description {
+        color: var(--bl-text-light);
+        line-height: 1.6;
+        margin-top: 1rem;
+      }
+      .product-actions {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+      }
+      .btn-add-cart {
+        background: var(--bl-primary);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: var(--bl-radius-full);
+        font-weight: 600;
+        cursor: pointer;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 1.125rem;
+        transition: all 0.2s;
+      }
+      .btn-add-cart:hover {
+        background: var(--bl-primary-dark);
+        transform: translateY(-2px);
+      }
+      @media (max-width: 768px) {
+        .product-page {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/producto-7brQPb2l.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/auth-utils-C2XCX4Fn.js">
+    <link rel="modulepreload" crossorigin href="/assets/cart-utils-Cg7pFG_6.js">
+    <link rel="stylesheet" crossorigin href="/assets/cart-utils-C756JBN-.css">
+    <link rel="stylesheet" crossorigin href="/assets/home-BX-nhA4Z.css">
+  </head>
+  <body>
+    <!-- ====== BARRA DE NAVEGACIÓN ====== -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+      <div class="navbar__top">
+        <a href="./home.html" class="navbar__logo" id="navbar-logo">
+          <img src="/assets/logoazulpng-BmcneNO6.png" alt="Baradero Local" class="navbar__logo-img" />
+          <div class="navbar__logo-text">
+            <span class="navbar__logo-title">Baradero Local</span>
+            <span class="navbar__logo-subtitle">Baradero, más cerca que nunca</span>
+          </div>
+        </a>
+        <div class="navbar__actions">
+          <a href="./perfil.html" class="navbar__action-circle" id="nav-profile" aria-label="Mi cuenta"><i class="fa-regular fa-user"></i></a>
+          <a href="./carrito.html" class="navbar__action-circle" id="nav-cart" aria-label="Carrito de compras">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="cart-badge" id="cart-badge"></span>
+          </a>
+        </div>
+      </div>
+      <div class="navbar__search-wrapper">
+        <div class="navbar__search">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="search" id="search-input" class="navbar__search-input" placeholder="¿Qué estás buscando?" autocomplete="off" />
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <div class="product-page" id="product-container">
+        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #64748b;">
+          Cargando producto...
+        </div>
+      </div>
+    </main>
+
+    <!-- Notificación Toast -->
+    <div class="toast" id="toast" aria-live="polite" role="status"></div>
+
+  </body>
+</html>
