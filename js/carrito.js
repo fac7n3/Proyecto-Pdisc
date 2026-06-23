@@ -2,7 +2,7 @@
 // Usa localStorage para persistir los productos entre páginas.
 import { supabase } from './auth-utils.js';
 
-import { getCart, saveCart, updateCartBadge } from './cart-utils.js';
+import { getCart, saveCart, updateCartBadge, MAX_QTY } from './cart-utils.js';
 
 // --- Producto de prueba (pre-cargado si el carrito está vacío) ---
 const PRODUCTO_PRUEBA = {
@@ -208,7 +208,7 @@ function initCouponEvents() {
     header.classList.toggle('is-open', isHidden);
   });
 
-  function applyCoupon() {
+  async function applyCoupon() {
     const code = input.value.trim().toUpperCase();
     message.className = 'coupon-message'; // reset
     
@@ -219,18 +219,36 @@ function initCouponEvents() {
       return;
     }
 
-    // Validación del código (Hardcodeado para prueba)
-    if (code === 'TEST15') {
-      currentDiscount = 0.15;
-      message.textContent = '¡Cupón aplicado! Tenés 15% de descuento.';
-      message.classList.add('is-success');
-    } else {
+    applyBtn.disabled = true;
+    applyBtn.textContent = 'Validando...';
+
+    try {
+      const { data, error } = await supabase
+        .from('coupons')
+        .select('discount_percentage')
+        .eq('code', code)
+        .eq('is_active', true)
+        .single();
+
+      if (error || !data) {
+        currentDiscount = 0;
+        message.textContent = 'Código inválido o expirado.';
+        message.classList.add('is-error');
+      } else {
+        currentDiscount = data.discount_percentage / 100;
+        message.textContent = `¡Cupón aplicado! Tenés ${data.discount_percentage}% de descuento.`;
+        message.classList.add('is-success');
+      }
+    } catch (err) {
+      console.error('Error validando cupón:', err);
       currentDiscount = 0;
-      message.textContent = 'Código inválido o expirado.';
+      message.textContent = 'Error al validar cupón.';
       message.classList.add('is-error');
+    } finally {
+      applyBtn.disabled = false;
+      applyBtn.textContent = 'Aplicar';
+      renderCart();
     }
-    
-    renderCart();
   }
 
   applyBtn.addEventListener('click', applyCoupon);
@@ -264,6 +282,10 @@ function initCartEvents() {
       }
     } else if (btn.classList.contains('cart-qty__plus')) {
       if (cart[index]) {
+        if (cart[index].qty >= MAX_QTY) {
+          showCartToast(`Máximo ${MAX_QTY} unidades por producto`);
+          return;
+        }
         cart[index].qty++;
         saveCart(cart);
         renderCart();

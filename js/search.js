@@ -1,60 +1,9 @@
 // Lógica para la página de búsqueda (search.html)
 import { supabase } from './auth-utils.js';
 
-import { getCart, saveCart, parsePrice, updateCartBadge, showToast } from './cart-utils.js';
+import { getCart, saveCart, parsePrice, updateCartBadge, showToast, initCartButtons, initWishlist } from './cart-utils.js';
 
-function initCartButtons() {
-  document.querySelectorAll('.product-card__add').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const card = btn.closest('.product-card');
-      if (!card) return;
 
-      const id = card.id || `product-${Date.now()}`;
-      const name = card.querySelector('.product-card__name')?.textContent || 'Producto';
-      const shop = card.querySelector('.product-card__shop')?.textContent?.replace(/^\s*/, '') || 'Tienda';
-      const priceText = card.querySelector('.product-card__price')?.textContent || '0';
-      const priceOldText = card.querySelector('.product-card__price-old')?.textContent || '';
-      const imgSrc = card.querySelector('.product-card__image img')?.getAttribute('src') || '';
-
-      const price = parsePrice(priceText);
-      const priceOld = parsePrice(priceOldText);
-
-      const cart = getCart();
-      const existing = cart.find(item => item.id === id);
-
-      if (existing) {
-        existing.qty++;
-      } else {
-        cart.push({ id, name, shop, price, priceOld: priceOld || null, image: imgSrc, qty: 1 });
-      }
-
-      saveCart(cart);
-      btn.style.transform = 'scale(0.93)';
-      setTimeout(() => { btn.style.transform = ''; }, 120);
-      updateCartBadge();
-      showToast(`${name} agregado al carrito`, 'success');
-    });
-  });
-}
-
-function initWishlist() {
-  document.querySelectorAll('.product-card__wishlist').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const icon = btn.querySelector('i');
-      const isActive = icon.classList.contains('fa-solid');
-
-      if (isActive) {
-        icon.classList.replace('fa-solid', 'fa-regular');
-        btn.style.color = '';
-        showToast('Eliminado de favoritos');
-      } else {
-        icon.classList.replace('fa-regular', 'fa-solid');
-        btn.style.color = '#ef4444';
-        showToast('Agregado a favoritos', 'success');
-      }
-    });
-  });
-}
 
 // --- ESTADO DE FILTROS ---
 const filterState = {
@@ -70,7 +19,11 @@ async function applyFilters() {
   const countEl = document.getElementById('catalog-count');
   if (!grid) return;
 
-  grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #64748b;">Cargando...</div>';
+  grid.innerHTML = '';
+  const loadingMsg = document.createElement('div');
+  loadingMsg.style.cssText = 'grid-column: 1/-1; text-align: center; padding: 2rem; color: #64748b;';
+  loadingMsg.textContent = 'Cargando...';
+  grid.appendChild(loadingMsg);
 
   try {
     let query = supabase
@@ -96,7 +49,6 @@ async function applyFilters() {
     } else if (filterState.sortBy === 'precio-desc') {
       query = query.order('price_cents', { ascending: false });
     } else {
-      // default: created_at desc (or whatever 'relevancia' means)
       query = query.order('created_at', { ascending: false });
     }
 
@@ -111,7 +63,10 @@ async function applyFilters() {
     }
 
     if (!products || products.length === 0) {
-      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #64748b;">No se encontraron productos con estos filtros.</div>';
+      const emptyMsg = document.createElement('div');
+      emptyMsg.style.cssText = 'grid-column: 1/-1; text-align: center; padding: 2rem; color: #64748b;';
+      emptyMsg.textContent = 'No se encontraron productos con estos filtros.';
+      grid.appendChild(emptyMsg);
       return;
     }
 
@@ -122,21 +77,70 @@ async function applyFilters() {
       const article = document.createElement('article');
       article.className = 'product-card';
       article.id = product.id;
-      
-      article.innerHTML = `
-        <div class="product-card__image">
-          <img src="${product.image_url || '../Assets/images/default-product.png'}" alt="${product.title}" loading="lazy" />
-          <button class="product-card__wishlist" aria-label="Agregar a favoritos"><i class="fa-regular fa-heart"></i></button>
-        </div>
-        <div class="product-card__body">
-          <span class="product-card__shop"><i class="fa-solid fa-store"></i> ${storeName}</span>
-          <h3 class="product-card__name">${product.title}</h3>
-          <div class="product-card__price-row">
-            <span class="product-card__price">$${priceStr}</span>
-          </div>
-          <button class="product-card__add" data-product-id="${product.id}"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
-        </div>
-      `;
+
+      // --- Image container ---
+      const imageDiv = document.createElement('div');
+      imageDiv.className = 'product-card__image';
+
+      const img = document.createElement('img');
+      img.src = product.image_url || '../Assets/images/default-product.png';
+      img.alt = product.title;
+      img.loading = 'lazy';
+      imageDiv.appendChild(img);
+
+      const wishBtn = document.createElement('button');
+      wishBtn.className = 'product-card__wishlist';
+      wishBtn.setAttribute('aria-label', 'Agregar a favoritos');
+      const heartIcon = document.createElement('i');
+      heartIcon.className = 'fa-regular fa-heart';
+      wishBtn.appendChild(heartIcon);
+      imageDiv.appendChild(wishBtn);
+
+      article.appendChild(imageDiv);
+
+      // --- Body ---
+      const body = document.createElement('div');
+      body.className = 'product-card__body';
+
+      const shippingSpan = document.createElement('span');
+      shippingSpan.className = 'product-card__shipping';
+      shippingSpan.style.cursor = 'pointer';
+      shippingSpan.title = 'Hacé clic para ver el costo de envío';
+      shippingSpan.addEventListener('click', (e) => {
+        e.preventDefault();
+        import('./auth-utils.js').then(({ showToast }) => {
+          showToast('Envío dentro de Baradero: $1.500. ¡Gratis en compras mayores a $20.000!');
+        });
+      });
+      const truckIcon = document.createElement('i');
+      truckIcon.className = 'fa-solid fa-truck';
+      shippingSpan.appendChild(truckIcon);
+      shippingSpan.append(' Calcular envío');
+      body.appendChild(shippingSpan);
+
+      const nameH3 = document.createElement('h3');
+      nameH3.className = 'product-card__name';
+      nameH3.textContent = product.title;
+      body.appendChild(nameH3);
+
+      const priceRow = document.createElement('div');
+      priceRow.className = 'product-card__price-row';
+      const priceSpan = document.createElement('span');
+      priceSpan.className = 'product-card__price';
+      priceSpan.textContent = `$${priceStr}`;
+      priceRow.appendChild(priceSpan);
+      body.appendChild(priceRow);
+
+      const addBtn = document.createElement('button');
+      addBtn.className = 'product-card__add';
+      addBtn.dataset.productId = product.id;
+      const cartIcon = document.createElement('i');
+      cartIcon.className = 'fa-solid fa-cart-plus';
+      addBtn.appendChild(cartIcon);
+      addBtn.append(' Agregar');
+      body.appendChild(addBtn);
+
+      article.appendChild(body);
       grid.appendChild(article);
     });
 
@@ -145,7 +149,11 @@ async function applyFilters() {
 
   } catch (err) {
     console.error('Error fetching products:', err);
-    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 2rem;">Error al buscar productos.</div>';
+    grid.innerHTML = '';
+    const errMsg = document.createElement('div');
+    errMsg.style.cssText = 'grid-column: 1/-1; text-align: center; color: #ef4444; padding: 2rem;';
+    errMsg.textContent = 'Error al buscar productos.';
+    grid.appendChild(errMsg);
   }
 }
 
@@ -162,36 +170,82 @@ async function loadCategories() {
     if (error) throw error;
     if (!categories || categories.length === 0) return;
 
-    // Top Nav
+    // Top Nav - build with DOM API (safe from XSS)
     if (topNav) {
-      const dropdownHtml = `
-        <div class="category-bar__dropdown">
-          <a href="#" class="category-bar__item" id="cat-mas">
-            Más <i class="fa-solid fa-chevron-down" style="font-size:0.625rem; opacity:0.5; margin-left:0.25rem;"></i>
-          </a>
-          <div class="category-bar__dropdown-menu" role="menu">
-            <a href="./vender.html" class="category-bar__dropdown-item" role="menuitem" style="color: var(--bl-primary); font-weight: 600;"><i class="fa-solid fa-store" style="color: inherit;"></i> Vender</a>
-          </div>
-        </div>
-      `;
-      let html = `
-        <a href="#" class="category-bar__item category-bar__item--active" id="cat-inicio">Inicio</a>
-        <a href="#" class="category-bar__item" id="cat-ofertas">Ofertas</a>
-      `;
+      topNav.innerHTML = '';
+
+      const inicio = document.createElement('a');
+      inicio.href = '#';
+      inicio.className = 'category-bar__item category-bar__item--active';
+      inicio.id = 'cat-inicio';
+      inicio.textContent = 'Inicio';
+      topNav.appendChild(inicio);
+
+      const ofertas = document.createElement('a');
+      ofertas.href = '#';
+      ofertas.className = 'category-bar__item';
+      ofertas.id = 'cat-ofertas';
+      ofertas.textContent = 'Ofertas';
+      topNav.appendChild(ofertas);
+
       categories.forEach(cat => {
-        html += `<a href="#" class="category-bar__item" data-filter="${cat.slug}" id="cat-${cat.slug}">${cat.name}</a>`;
+        const link = document.createElement('a');
+        link.href = '#';
+        link.className = 'category-bar__item';
+        link.dataset.filter = cat.slug;
+        link.id = `cat-${cat.slug}`;
+        link.textContent = cat.name;
+        topNav.appendChild(link);
       });
-      html += dropdownHtml;
-      topNav.innerHTML = html;
+
+      // Dropdown
+      const dropdown = document.createElement('div');
+      dropdown.className = 'category-bar__dropdown';
+      const masLink = document.createElement('a');
+      masLink.href = '#';
+      masLink.className = 'category-bar__item';
+      masLink.id = 'cat-mas';
+      masLink.textContent = 'Más ';
+      const chevron = document.createElement('i');
+      chevron.className = 'fa-solid fa-chevron-down';
+      chevron.style.cssText = 'font-size:0.625rem; opacity:0.5; margin-left:0.25rem;';
+      masLink.appendChild(chevron);
+      dropdown.appendChild(masLink);
+
+      const dropdownMenu = document.createElement('div');
+      dropdownMenu.className = 'category-bar__dropdown-menu';
+      dropdownMenu.setAttribute('role', 'menu');
+      const venderLink = document.createElement('a');
+      venderLink.href = './vender.html';
+      venderLink.className = 'category-bar__dropdown-item';
+      venderLink.setAttribute('role', 'menuitem');
+      venderLink.style.cssText = 'color: var(--bl-primary); font-weight: 600;';
+      const storeIcon = document.createElement('i');
+      storeIcon.className = 'fa-solid fa-store';
+      storeIcon.style.color = 'inherit';
+      venderLink.appendChild(storeIcon);
+      venderLink.append(' Vender');
+      dropdownMenu.appendChild(venderLink);
+      dropdown.appendChild(dropdownMenu);
+      topNav.appendChild(dropdown);
     }
 
-    // Sidebar Nav
+    // Sidebar Nav - build with DOM API
     if (sidebarNav) {
-      let html = `<button class="filter-pill filter-pill--active" data-cat="todas">Todas</button>`;
+      sidebarNav.innerHTML = '';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'filter-pill filter-pill--active';
+      allBtn.dataset.cat = 'todas';
+      allBtn.textContent = 'Todas';
+      sidebarNav.appendChild(allBtn);
+
       categories.forEach(cat => {
-        html += `<button class="filter-pill" data-cat="${cat.slug}">${cat.name}</button>`;
+        const pill = document.createElement('button');
+        pill.className = 'filter-pill';
+        pill.dataset.cat = cat.slug;
+        pill.textContent = cat.name;
+        sidebarNav.appendChild(pill);
       });
-      sidebarNav.innerHTML = html;
       
       // Re-bind listeners for newly created pills
       const newPills = sidebarNav.querySelectorAll('.filter-pill');

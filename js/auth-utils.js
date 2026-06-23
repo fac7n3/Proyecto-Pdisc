@@ -116,7 +116,9 @@ export function checkUrlErrors() {
       if (decodedDesc.includes("Database error")) {
         userMsg = "Error de base de datos al guardar tu perfil. Por favor, intentá de nuevo.";
       } else {
-        userMsg = `Error: ${decodedDesc}`;
+        // Truncar para evitar mensajes absurdamente largos inyectados via URL
+        const safeDesc = decodedDesc.length > 200 ? decodedDesc.substring(0, 200) + '…' : decodedDesc;
+        userMsg = `Error: ${safeDesc}`;
       }
     }
     showToast(userMsg, "error");
@@ -170,6 +172,7 @@ export async function guardPage({
   requireAuth = false,
   redirectIfAuth = false,
   redirectTo = null,
+  requireRole = null,
   onReady = null,
 } = {}) {
   // 1. Ocultar contenido inmediatamente y mostrar loading
@@ -216,6 +219,21 @@ export async function guardPage({
       // Autenticado en página de login/register → a home
       window.location.replace(redirectTo || '../pages/home.html');
       return null;
+    }
+
+    // Role check
+    if (user && requireRole) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+      
+      const role = profile?.role || user.user_metadata?.role || 'cliente';
+      if (role !== requireRole) {
+        window.location.replace('../pages/home.html');
+        return null;
+      }
     }
 
     // 5. Auth confirmada → mostrar contenido
